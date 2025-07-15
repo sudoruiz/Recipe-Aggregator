@@ -11,29 +11,40 @@ import java.util.List;
 
 class RecipeDAO {
 
-    private static final String URL = "jdbc:sqlite:recipes.db";
+    private static final String URL = "jdbc:sqlite:/home/renan/recipe-data/recipes.db";
 
     public RecipeDAO() {
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            System.out.println("Driver SQlite carregado com sucesso.");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Erro ao carregar o arquivo JDBC" + e.getMessage());
+        }
+
+        System.out.println("Iniciando RecipeDAO");
         createTable();
 
     }
 
     private void createTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS recipes ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "name TEXT NOT NULL, "
+                + "description TEXT, "
+                + "ingredients TEXT, "
+                + "preparationTime INTEGER, "
+                + "portions INTEGER)";
         try (Connection conn = DriverManager.getConnection(URL); Statement stmt = conn.createStatement()) {
-            String sql = "CREATE TABLE IF NOT EXISTS recipes ("
-                    + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + "name TEXT NOT NULL, "
-                    + "description TEXT, "
-                    + "ingredients TEXT, "
-                    + "preparationTime INTEGER, "
-                    + "portions INTEGER)";
             stmt.execute(sql);
+            System.out.println("Tabela recipes verificada/criada com sucesso.");
         } catch (SQLException e) {
             System.out.println("Erro ao criar a tabela: " + e.getMessage());
         }
     }
 
     public void insert(Recipe recipe) {
+        System.out.println("Inserindo receita: " + recipe.getName());
         String sql = "INSERT INTO recipes(name, description, ingredients, preparationTime, portions) VALUES(?, ?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(URL); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, recipe.getName());
@@ -45,6 +56,7 @@ class RecipeDAO {
         } catch (SQLException e) {
             System.out.println("Erro ao inserir receita: " + e.getMessage());
         }
+        System.out.println("Receita inserida com sucesso");
     }
 
     //Listar receitas
@@ -62,10 +74,13 @@ class RecipeDAO {
                         rs.getInt("portions")
                 );
                 recipes.add(recipe);
+                System.out.println("Encontrada a receita: " + rs.getString("name"));
             }
         } catch (SQLException e) {
             System.out.println("Erro ao listar receitas: " + e.getMessage());
         }
+        System.out.println("Listando receitas");
+
         return recipes;
     }
 
