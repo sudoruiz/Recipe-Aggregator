@@ -1,5 +1,5 @@
-com/mycompany/recipeaggregator/RecipeHandler.class
 com/mycompany/recipeaggregator/Main.class
+com/mycompany/recipeaggregator/config/DatabaseConfig.class
 com/mycompany/recipeaggregator/RecipeDAO.class
 com/mycompany/recipeaggregator/RecipeServlet.class
 com/mycompany/recipeaggregator/Recipe.class
