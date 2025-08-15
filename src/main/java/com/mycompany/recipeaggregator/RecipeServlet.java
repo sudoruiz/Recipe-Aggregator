@@ -1,6 +1,7 @@
 package com.mycompany.recipeaggregator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mycompany.recipeaggregator.config.DatabaseConfig;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.util.List;
 
 public class RecipeServlet extends HttpServlet {
 
-    RecipeDAO dao = new RecipeDAO();
+    RecipeDAO dao = new RecipeDAO(DatabaseConfig.PROD_DB_URL);
     ObjectMapper mapper = new ObjectMapper();
 
     @Override

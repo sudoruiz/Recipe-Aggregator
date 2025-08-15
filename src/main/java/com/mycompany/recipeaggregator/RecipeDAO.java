@@ -11,9 +11,12 @@ import java.util.List;
 
 class RecipeDAO {
 
-    private static final String URL = "jdbc:sqlite:/home/renan/recipe-data/recipes.db";
+//    private static final String URL = "jdbc:sqlite:/home/renan/recipe-data/recipes.db";
 
-    public RecipeDAO() {
+    private final String url;
+    
+    public RecipeDAO(String url) {
+        this.url = url;
 
         try {
             Class.forName("org.sqlite.JDBC");
@@ -28,7 +31,7 @@ class RecipeDAO {
 
     }
 
-    private void createTable() throws SQLException {
+    public void createTable() throws SQLException {
         String sql = "CREATE TABLE IF NOT EXISTS recipes ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "name TEXT NOT NULL, "
@@ -36,7 +39,7 @@ class RecipeDAO {
                 + "ingredients TEXT, "
                 + "preparationTime INTEGER, "
                 + "portions INTEGER)";
-        try (Connection conn = DriverManager.getConnection(URL); Statement stmt = conn.createStatement()) {
+        try (Connection conn = DriverManager.getConnection(url); Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
         }
     }
@@ -44,7 +47,7 @@ class RecipeDAO {
     public void insert(Recipe recipe) throws SQLException{
         System.out.println("Inserindo receita: " + recipe.getName());
         String sql = "INSERT INTO recipes(name, description, ingredients, preparationTime, portions) VALUES(?, ?, ?, ?, ?)";
-        try (Connection conn = DriverManager.getConnection(URL); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DriverManager.getConnection(url); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, recipe.getName());
             pstmt.setString(2, recipe.getDescription());
             pstmt.setString(3, recipe.getIngredients());
@@ -58,7 +61,7 @@ class RecipeDAO {
     public List<Recipe> list() throws SQLException {
         List<Recipe> recipes = new ArrayList<>();
         String sql = "SELECT * FROM recipes";
-        try (Connection conn = DriverManager.getConnection(URL); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+        try (Connection conn = DriverManager.getConnection(url); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Recipe recipe = new Recipe(
                         rs.getInt("id"),
@@ -80,7 +83,7 @@ class RecipeDAO {
     //Atualiza receita
     public void update(Recipe recipe) throws SQLException {
         String sql = "UPDATE recipes SET name = ?, description = ?, ingredients = ?, preparationTime = ?, portions = ? WHERE id = ?";
-        try (Connection conn = DriverManager.getConnection(URL); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DriverManager.getConnection(url); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, recipe.getName());
             pstmt.setString(2, recipe.getDescription());
             pstmt.setString(3, recipe.getIngredients());
@@ -94,7 +97,7 @@ class RecipeDAO {
 
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM recipes WHERE id = ?";
-        try (Connection conn = DriverManager.getConnection(URL); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DriverManager.getConnection(url); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
         }
