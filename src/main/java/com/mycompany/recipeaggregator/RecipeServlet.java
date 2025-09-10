@@ -1,4 +1,4 @@
-package com.mycompany.recipeaggregator;
+    package com.mycompany.recipeaggregator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.recipeaggregator.config.DatabaseConfig;
@@ -29,7 +29,8 @@ public class RecipeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            Recipe recipe = mapper.readValue(request.getReader(), Recipe.class);
+            RecipeDTO dto = mapper.readValue(request.getReader(), RecipeDTO.class);
+            Recipe recipe = RecipeMapper.toEntity(dto);
             dao.insert(recipe);
             response.setStatus(HttpServletResponse.SC_CREATED);
             response.getWriter().write("{\"message\": \"Receita criada com sucesso\"}");
