@@ -1,31 +1,22 @@
 package com.mycompany.recipeaggregator;
 
-public class Recipe {
+public class RecipeDTO {
 
-    private int id;
     private String name;
     private String description;
     private String ingredients;
     private int preparationTime;
     private int portions;
 
-    public Recipe() {}
+    public RecipeDTO() {
+    }
 
-    public Recipe(int id, String name, String description, String ingredients, int preparationTime, int portions) {
-        this.id = id;
+    public RecipeDTO(String name, String description, String ingredients, int preparationTime, int portions) {
         this.name = name;
         this.description = description;
         this.ingredients = ingredients;
         this.preparationTime = preparationTime;
         this.portions = portions;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {

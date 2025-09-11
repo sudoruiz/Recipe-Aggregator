@@ -11,8 +11,6 @@ import java.util.List;
 
 class RecipeDAO {
 
-//    private static final String URL = "jdbc:sqlite:/home/renan/recipe-data/recipes.db";
-
     private final String url;
     
     public RecipeDAO(String url) {
@@ -57,7 +55,6 @@ class RecipeDAO {
         }
     }
 
-    //Listar receitas
     public List<Recipe> list() throws SQLException {
         List<Recipe> recipes = new ArrayList<>();
         String sql = "SELECT * FROM recipes";
@@ -80,7 +77,6 @@ class RecipeDAO {
         return recipes;
     }
 
-    //Atualiza receita
     public void update(Recipe recipe) throws SQLException {
         String sql = "UPDATE recipes SET name = ?, description = ?, ingredients = ?, preparationTime = ?, portions = ? WHERE id = ?";
         try (Connection conn = DriverManager.getConnection(url); PreparedStatement pstmt = conn.prepareStatement(sql)) {
