@@ -7,8 +7,9 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class RecipeServlet extends HttpServlet {
+    public class RecipeServlet extends HttpServlet {
 
     RecipeDAO dao = new RecipeDAO(DatabaseConfig.PROD_DB_URL);
     ObjectMapper mapper = new ObjectMapper();
@@ -18,8 +19,12 @@ public class RecipeServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             List<Recipe> recipes = dao.list();
+            List<RecipeDTO> dtoList = recipes.stream()
+                    .map(RecipeMapper::toDTO)
+                    .collect(Collectors.toList());
             response.setContentType("application/json");
-            response.getWriter().write(mapper.writeValueAsString(recipes));
+            response.getWriter().write(mapper.writeValueAsString(dtoList));
+
         } catch (SQLException e) {
             sendError(response, 500, "Erro ao listar receitas", e);
         }
@@ -42,9 +47,21 @@ public class RecipeServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String idParam = request.getParameter("id");
+        if (idParam == null) {
+            sendError(response, 400, "Id não fornecido", null);
+            return;
+        }
         try {
-            Recipe recipe = mapper.readValue(request.getReader(), Recipe.class);
+            int id = Integer.parseInt(idParam);
+
+            RecipeDTO dto = mapper.readValue(request.getReader(), RecipeDTO.class);
+
+            Recipe recipe = RecipeMapper.toEntity(dto);
+            recipe.setId(id);
+
             dao.update(recipe);
+            response.setContentType("application/json");
             response.getWriter().write("{\"message\": \"Receita atualizada com sucesso\"}");
         } catch (SQLException e) {
             sendError(response, 500, "Erro ao atualizar receita", e);
