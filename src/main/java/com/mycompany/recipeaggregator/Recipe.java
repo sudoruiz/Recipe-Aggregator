@@ -1,17 +1,19 @@
 package com.mycompany.recipeaggregator;
 
+import java.util.List;
+
 public class Recipe {
 
     private int id;
     private String name;
     private String description;
-    private String ingredients;
+    private List<String> ingredients;
     private int preparationTime;
     private int portions;
 
     public Recipe() {}
 
-    public Recipe(int id, String name, String description, String ingredients, int preparationTime, int portions) {
+    public Recipe(int id, String name, String description, List<String> ingredients, int preparationTime, int portions) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -44,11 +46,11 @@ public class Recipe {
         this.description = description;
     }
 
-    public String getIngredients() {
+    public List<String> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(String ingredients) {
+    public void setIngredients(List<String> ingredients) {
         this.ingredients = ingredients;
     }
 

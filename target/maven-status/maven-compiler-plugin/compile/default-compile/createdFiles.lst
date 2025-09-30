@@ -1,5 +1,7 @@
-com/mycompany/recipeaggregator/Main.class
-com/mycompany/recipeaggregator/config/DatabaseConfig.class
+com/mycompany/recipeaggregator/RecipeDTO.class
 com/mycompany/recipeaggregator/RecipeDAO.class
-com/mycompany/recipeaggregator/RecipeServlet.class
 com/mycompany/recipeaggregator/Recipe.class
+com/mycompany/recipeaggregator/Main.class
+com/mycompany/recipeaggregator/RecipeMapper.class
+com/mycompany/recipeaggregator/config/DatabaseConfig.class
+com/mycompany/recipeaggregator/RecipeServlet.class

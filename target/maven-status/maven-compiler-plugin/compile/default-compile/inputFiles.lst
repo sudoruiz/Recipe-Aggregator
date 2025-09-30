@@ -1,5 +1,7 @@
+/home/renan-miguel/Desktop/Projects/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/RecipeServlet.java
+/home/renan-miguel/Desktop/Projects/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/RecipeMapper.java
+/home/renan-miguel/Desktop/Projects/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/config/DatabaseConfig.java
 /home/renan-miguel/Desktop/Projects/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/Main.java
 /home/renan-miguel/Desktop/Projects/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/Recipe.java
 /home/renan-miguel/Desktop/Projects/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/RecipeDAO.java
-/home/renan-miguel/Desktop/Projects/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/RecipeServlet.java
-/home/renan-miguel/Desktop/Projects/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/config/DatabaseConfig.java
+/home/renan-miguel/Desktop/Projects/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/RecipeDTO.java

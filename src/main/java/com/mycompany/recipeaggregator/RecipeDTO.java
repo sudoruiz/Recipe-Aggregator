@@ -1,23 +1,25 @@
 package com.mycompany.recipeaggregator;
 
+import java.util.List;
+
 public class RecipeDTO {
 
     private String name;
     private String description;
-    private String ingredients;
+    private List<String> ingredients;
     private int preparationTime;
     private int portions;
 
-    public RecipeDTO() {
-    }
+    public RecipeDTO() {}
 
-    public RecipeDTO(String name, String description, String ingredients, int preparationTime, int portions) {
+    public RecipeDTO(String name, String description, List<String> ingredients, int preparationTime, int portions) {
         this.name = name;
         this.description = description;
         this.ingredients = ingredients;
         this.preparationTime = preparationTime;
         this.portions = portions;
     }
+
 
     public String getName() {
         return name;
@@ -35,11 +37,11 @@ public class RecipeDTO {
         this.description = description;
     }
 
-    public String getIngredients() {
+    public List<String> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(String ingredients) {
+    public void setIngredients(List<String> ingredients) {
         this.ingredients = ingredients;
     }
 
