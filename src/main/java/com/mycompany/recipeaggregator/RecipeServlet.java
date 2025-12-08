@@ -2,6 +2,9 @@
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.recipeaggregator.config.DatabaseConfig;
+import com.mycompany.recipeaggregator.dao.RecipeDAO;
+import com.mycompany.recipeaggregator.dto.*;
+import com.mycompany.recipeaggregator.models.Recipe;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
@@ -19,8 +22,8 @@ import java.util.stream.Collectors;
             throws ServletException, IOException {
         try {
             List<Recipe> recipes = dao.list();
-            List<RecipeDTO> dtoList = recipes.stream()
-                    .map(RecipeMapper::toDTO)
+            List<RecipeResponseDTO> dtoList = recipes.stream()
+                    .map(Mapper::toDTO)
                     .collect(Collectors.toList());
             response.setContentType("application/json");
             response.getWriter().write(mapper.writeValueAsString(dtoList));
@@ -34,8 +37,8 @@ import java.util.stream.Collectors;
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            RecipeDTO dto = mapper.readValue(request.getReader(), RecipeDTO.class);
-            Recipe recipe = RecipeMapper.toEntity(dto);
+            RecipeCreateDTO dto = mapper.readValue(request.getReader(), RecipeCreateDTO.class);
+            Recipe recipe = Mapper.toEntity(dto);
             dao.insert(recipe);
             response.setStatus(HttpServletResponse.SC_CREATED);
             response.getWriter().write("{\"message\": \"Receita criada com sucesso\"}");
@@ -55,9 +58,9 @@ import java.util.stream.Collectors;
         try {
             int id = Integer.parseInt(idParam);
 
-            RecipeDTO dto = mapper.readValue(request.getReader(), RecipeDTO.class);
+            RecipeCreateDTO dto = mapper.readValue(request.getReader(), RecipeCreateDTO.class);
 
-            Recipe recipe = RecipeMapper.toEntity(dto);
+            Recipe recipe = Mapper.toEntity(dto);
             recipe.setId(id);
 
             dao.update(recipe);
