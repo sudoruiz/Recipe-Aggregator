@@ -13,5 +13,15 @@
         <servlet-name>recipeServlet</servlet-name>
         <url-pattern>/recipes</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ingredientServlet</servlet-name>
+        <servlet-class>com.mycompany.recipeaggregator.IngredientServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ingredientServlet</servlet-name>
+        <url-pattern>/ingredients</url-pattern>
+    </servlet-mapping>
     
 </web-app>
