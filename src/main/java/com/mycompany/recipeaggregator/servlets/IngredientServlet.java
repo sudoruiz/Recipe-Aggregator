@@ -5,6 +5,7 @@ import com.mycompany.recipeaggregator.config.DatabaseConfig;
 import com.mycompany.recipeaggregator.dao.IngredientDAO;
 import com.mycompany.recipeaggregator.dto.IngredientCreateDTO;
 import com.mycompany.recipeaggregator.dto.IngredientResponseDTO;
+import com.mycompany.recipeaggregator.dto.IngredientUsageDTO;
 import com.mycompany.recipeaggregator.dto.Mapper;
 import com.mycompany.recipeaggregator.models.Ingredient;
 import jakarta.servlet.ServletException;
@@ -23,7 +24,20 @@ public class IngredientServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        String mostUsedParam = request.getParameter("mostUsed");
+
         try {
+
+            if ("true".equalsIgnoreCase(mostUsedParam)) {
+                List<IngredientUsageDTO> mostUsed = dao.findMostUsed();
+
+                response.setContentType("application/json");
+                response.getWriter().write(
+                        mapper.writeValueAsString(mostUsed)
+                );
+                return;
+            }
+
             List<Ingredient> ingredients = dao.list();
             List<IngredientResponseDTO> dtoList = ingredients.stream()
                     .map(Mapper::toDTO)
@@ -93,5 +107,7 @@ public class IngredientServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+
 }
 
