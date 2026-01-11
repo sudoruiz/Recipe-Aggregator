@@ -6,7 +6,7 @@
     
     <servlet>
         <servlet-name>recipeServlet</servlet-name>
-        <servlet-class>com.mycompany.recipeaggregator.RecipeServlet</servlet-class>
+        <servlet-class>com.mycompany.recipeaggregator.servlets.RecipeServlet</servlet-class>
     </servlet>
     
     <servlet-mapping>
@@ -16,7 +16,7 @@
 
     <servlet>
         <servlet-name>ingredientServlet</servlet-name>
-        <servlet-class>com.mycompany.recipeaggregator.IngredientServlet</servlet-class>
+        <servlet-class>com.mycompany.recipeaggregator.servlets.IngredientServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
