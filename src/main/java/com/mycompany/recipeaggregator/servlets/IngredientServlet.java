@@ -1,4 +1,4 @@
-package com.mycompany.recipeaggregator;
+package com.mycompany.recipeaggregator.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.recipeaggregator.config.DatabaseConfig;
