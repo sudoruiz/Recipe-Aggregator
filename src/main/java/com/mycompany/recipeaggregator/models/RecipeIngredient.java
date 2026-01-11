@@ -5,6 +5,7 @@ public class RecipeIngredient {
     private int ingredientId;
     private int quantity;
     private String unit;
+    private String ingredientName;
 
     public RecipeIngredient() {}
 
@@ -46,4 +47,8 @@ public class RecipeIngredient {
     public void setUnit(String unit) {
         this.unit = unit;
     }
+
+    public String getIngredientName() {return ingredientName;}
+
+    public void setIngredientName(String ingredientName) {this.ingredientName = ingredientName;}
 }

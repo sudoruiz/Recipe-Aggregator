@@ -7,14 +7,14 @@ import java.util.stream.Collectors;
 
 public class Mapper {
 
-    public static Ingredient toEntity(IngredientDTO dto) {
+    public static Ingredient toEntity(IngredientCreateDTO dto) {
         Ingredient ingredient = new Ingredient();
         ingredient.setName(dto.getName());
         return ingredient;
     }
 
-    public static IngredientDTO toDTO(Ingredient entity) {
-        return new IngredientDTO(entity.getName());
+    public static IngredientResponseDTO toDTO(Ingredient entity) {
+        return new IngredientResponseDTO(entity.getId(), entity.getName());
     }
 
     public static RecipeIngredient toEntity(RecipeIngredientDTO dto, int recipeId) {
@@ -47,20 +47,20 @@ public class Mapper {
     }
 
     public static RecipeResponseDTO toDTO(Recipe entity) {
-       List<RecipeIngredientDTO> ingredientDTOs = entity.getIngredients()
-               .stream()
-               .map(Mapper::toDTO)
-               .toList();
+        List<RecipeIngredientDTO> ingredientDTOs = entity.getIngredients()
+                .stream()
+                .map(Mapper::toDTO)
+                .toList();
 
-       RecipeResponseDTO dto = new RecipeResponseDTO();
-       dto.setId(entity.getId());
-       dto.setName(entity.getName());
-       dto.setDescription(entity.getDescription());
-       dto.setIngredients(ingredientDTOs);
-       dto.setPreparationTime(entity.getPreparationTime());
-       dto.setPortions(entity.getPortions());
+        RecipeResponseDTO dto = new RecipeResponseDTO();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setDescription(entity.getDescription());
+        dto.setIngredients(ingredientDTOs);
+        dto.setPreparationTime(entity.getPreparationTime());
+        dto.setPortions(entity.getPortions());
 
-       return dto;
+        return dto;
     }
 
 }

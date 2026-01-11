@@ -29,17 +29,17 @@ public class RecipeIngredientDAO {
     public List<RecipeIngredient> findByRecipeId(int recipeId) throws SQLException {
         List<RecipeIngredient> list = new ArrayList<>();
         String sql = "SELECT * FROM recipe_ingredients WHERE recipe_id = ?";
-        try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DriverManager.getConnection(url); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, recipeId);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 list.add(new RecipeIngredient(
-                        rs.getInt("recipe_id"),
-                        rs.getInt("ingredient_id"),
-                        rs.getInt("quantity"),
-                        rs.getString("unit")
-                ));
+                                rs.getInt("recipe_id"),
+                                rs.getInt("ingredient_id"),
+                                rs.getInt("quantity"),
+                                rs.getString("unit")
+                        )
+                );
             }
         }
         return list;

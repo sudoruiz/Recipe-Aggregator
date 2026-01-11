@@ -3,7 +3,8 @@ package com.mycompany.recipeaggregator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.recipeaggregator.config.DatabaseConfig;
 import com.mycompany.recipeaggregator.dao.IngredientDAO;
-import com.mycompany.recipeaggregator.dto.IngredientDTO;
+import com.mycompany.recipeaggregator.dto.IngredientCreateDTO;
+import com.mycompany.recipeaggregator.dto.IngredientResponseDTO;
 import com.mycompany.recipeaggregator.dto.Mapper;
 import com.mycompany.recipeaggregator.models.Ingredient;
 import jakarta.servlet.ServletException;
@@ -24,7 +25,7 @@ public class IngredientServlet extends HttpServlet {
 
         try {
             List<Ingredient> ingredients = dao.list();
-            List<IngredientDTO> dtoList = ingredients.stream()
+            List<IngredientResponseDTO> dtoList = ingredients.stream()
                     .map(Mapper::toDTO)
                     .toList();
 
@@ -41,14 +42,16 @@ public class IngredientServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            IngredientDTO dto = mapper.readValue(request.getReader(), IngredientDTO.class);
+            IngredientCreateDTO dto = mapper.readValue(request.getReader(), IngredientCreateDTO.class);
             Ingredient ingredient = Mapper.toEntity(dto);
 
             dao.insert(ingredient);
 
+            IngredientResponseDTO responseDTO = Mapper.toDTO(ingredient);
+
             response.setStatus(HttpServletResponse.SC_CREATED);
             response.setContentType("application/json");
-            response.getWriter().write("{\"message\": \"Ingrediente criado com sucesso\"}");
+            response.getWriter().write(mapper.writeValueAsString(responseDTO));
 
         } catch (SQLException e) {
             sendError(response, 500, "Erro ao criar ingrediente", e);

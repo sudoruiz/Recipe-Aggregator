@@ -1,11 +1,12 @@
 com/mycompany/recipeaggregator/models/Recipe.class
+com/mycompany/recipeaggregator/dto/IngredientResponseDTO.class
 com/mycompany/recipeaggregator/dto/Mapper.class
 com/mycompany/recipeaggregator/models/Ingredient.class
 com/mycompany/recipeaggregator/dao/RecipeDAO.class
-com/mycompany/recipeaggregator/dto/IngredientDTO.class
 com/mycompany/recipeaggregator/dto/RecipeIngredientDTO.class
 com/mycompany/recipeaggregator/RecipeServlet.class
 com/mycompany/recipeaggregator/dao/IngredientDAO.class
+com/mycompany/recipeaggregator/dto/IngredientCreateDTO.class
 com/mycompany/recipeaggregator/dto/RecipeResponseDTO.class
 com/mycompany/recipeaggregator/dto/RecipeCreateDTO.class
 com/mycompany/recipeaggregator/dao/RecipeIngredientDAO.class

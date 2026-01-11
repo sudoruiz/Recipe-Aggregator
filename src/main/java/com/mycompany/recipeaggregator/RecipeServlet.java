@@ -41,7 +41,11 @@ import java.util.stream.Collectors;
             Recipe recipe = Mapper.toEntity(dto);
             dao.insert(recipe);
             response.setStatus(HttpServletResponse.SC_CREATED);
-            response.getWriter().write("{\"message\": \"Receita criada com sucesso\"}");
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            String json  = mapper.writeValueAsString(recipe);
+            response.getWriter().write(json);
         } catch (SQLException e) {
             sendError(response, 500, "Erro ao inserir receita", e);
         }

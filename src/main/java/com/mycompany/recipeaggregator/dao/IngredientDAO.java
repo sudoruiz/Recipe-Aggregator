@@ -16,10 +16,16 @@ public class IngredientDAO {
 
     public void insert(Ingredient ingredient) throws SQLException {
         String sql = "INSERT INTO ingredients (name) VALUES (?)";
+
         try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, ingredient.getName());
             pstmt.executeUpdate();
+
+            ResultSet keys = pstmt.getGeneratedKeys();
+            if (keys.next()) {
+                ingredient.setId(keys.getInt(1));
+            }
         }
     }
 
