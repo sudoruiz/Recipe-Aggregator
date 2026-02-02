@@ -54,5 +54,53 @@ public class RecipeIngredientDAO {
         }
     }
 
+    public void addIngredient(int recipeId, int ingredientId, Integer quantity, String unit)
+            throws SQLException {
+        String sql = """
+                INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit)
+                VALUES (?, ?, ?, ?)
+                """;
+        try (Connection conn = DriverManager.getConnection(url);
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, recipeId);
+            pstmt.setInt(2, ingredientId);
+            pstmt.setInt(3, quantity);
+            pstmt.setString(4, unit);
+            pstmt.executeUpdate();
+        }
+    }
+
+    public void removeIngredient(int recipeId, int ingredientId)
+            throws SQLException {
+        String sql = """
+                DELETE FROM recipe_ingredients 
+                WHERE recipe_id = ? AND ingredient_id = ?
+                """;
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, recipeId);
+            pstmt.setInt(2, ingredientId);
+
+            pstmt.executeUpdate();
+        }
+    }
+
+    public void updateIngredient(int recipeId, int ingredientId, Integer quantity, String unit)
+            throws SQLException {
+        String sql = """
+                UPDATE recipe_ingredients
+                SET quantity = ?, unit = ?
+                WHERE recipe_id = ? AND ingredient_id = ?
+                """;
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, recipeId);
+            pstmt.setInt(2, ingredientId);
+            pstmt.setInt(3, quantity);
+            pstmt.setString(4, unit);
+            pstmt.executeUpdate();
+        }
+    }
+
 }
 
