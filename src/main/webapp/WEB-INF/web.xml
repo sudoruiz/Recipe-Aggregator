@@ -11,7 +11,7 @@
     
     <servlet-mapping>
         <servlet-name>recipeServlet</servlet-name>
-        <url-pattern>/recipes</url-pattern>
+        <url-pattern>/recipes/*</url-pattern>
     </servlet-mapping>
 
     <servlet>

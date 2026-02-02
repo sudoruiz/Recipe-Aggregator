@@ -1,4 +1,5 @@
 com/mycompany/recipeaggregator/models/Recipe.class
+com/mycompany/recipeaggregator/dto/RecipeIngredientPatchDTO.class
 com/mycompany/recipeaggregator/dto/IngredientResponseDTO.class
 com/mycompany/recipeaggregator/dto/Mapper.class
 com/mycompany/recipeaggregator/models/Ingredient.class

@@ -1,5 +1,9 @@
 package com.mycompany.recipeaggregator.dao;
 
+import com.mycompany.recipeaggregator.dto.IngredientCreateDTO;
+import com.mycompany.recipeaggregator.dto.IngredientResponseDTO;
+import com.mycompany.recipeaggregator.dto.RecipeIngredientDTO;
+import com.mycompany.recipeaggregator.dto.RecipeResponseDTO;
 import com.mycompany.recipeaggregator.models.Recipe;
 import com.mycompany.recipeaggregator.models.RecipeIngredient;
 
@@ -15,7 +19,7 @@ import java.util.List;
 public class RecipeDAO {
 
     private final String url;
-    
+
     public RecipeDAO(String url) {
         this.url = url;
 
@@ -61,7 +65,7 @@ public class RecipeDAO {
         }
     }
 
-    public void insert(Recipe recipe) throws SQLException{
+    public void insert(Recipe recipe) throws SQLException {
         String sql = "INSERT INTO recipes(name, description, preparationTime, portions) VALUES(?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -148,5 +152,4 @@ public class RecipeDAO {
             pstmt.executeUpdate();
         }
     }
-
 }
