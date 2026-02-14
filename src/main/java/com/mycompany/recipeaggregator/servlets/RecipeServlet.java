@@ -1,32 +1,45 @@
 package com.mycompany.recipeaggregator.servlets;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mycompany.recipeaggregator.repository.RecipeIngredientRepository;
+import com.mycompany.recipeaggregator.service.RecipeIngredientService;
+import com.mycompany.recipeaggregator.repository.RecipeRepository;
+import com.mycompany.recipeaggregator.service.RecipeService;
 import com.mycompany.recipeaggregator.config.DatabaseConfig;
-import com.mycompany.recipeaggregator.dao.RecipeDAO;
-import com.mycompany.recipeaggregator.dao.RecipeIngredientDAO;
-import com.mycompany.recipeaggregator.dto.*;
 import com.mycompany.recipeaggregator.models.Recipe;
-import jakarta.servlet.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mycompany.recipeaggregator.dao.*;
+import com.mycompany.recipeaggregator.dto.*;
 import jakarta.servlet.http.*;
-
-import java.io.IOException;
 import java.sql.SQLException;
+import java.io.IOException;
+import jakarta.servlet.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RecipeServlet extends HttpServlet {
 
-    RecipeDAO dao = new RecipeDAO(DatabaseConfig.PROD_DB_URL);
-    ObjectMapper mapper = new ObjectMapper();
+    private RecipeIngredientService recipeIngredientService;
+    private RecipeService recipeService;
+    private ObjectMapper mapper;
+
+    @Override
+    public void init() {
+        RecipeRepository repo =
+                new RecipeDAO(DatabaseConfig.PROD_DB_URL);
+
+        RecipeIngredientRepository ingredientRepo =
+                new RecipeIngredientDAO(DatabaseConfig.PROD_DB_URL);
+
+        this.recipeIngredientService = new RecipeIngredientService(ingredientRepo);
+        this.recipeService = new RecipeService(repo);
+        this.mapper = new ObjectMapper();
+    }
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            List<Recipe> recipes = dao.list();
-            List<RecipeResponseDTO> dtoList = recipes.stream()
-                    .map(Mapper::toDTO)
-                    .collect(Collectors.toList());
+            List<RecipeResponseDTO> dtoList = recipeService.listRecipes();
             response.setContentType("application/json");
             response.getWriter().write(mapper.writeValueAsString(dtoList));
 
@@ -40,8 +53,7 @@ public class RecipeServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             RecipeCreateDTO dto = mapper.readValue(request.getReader(), RecipeCreateDTO.class);
-            Recipe recipe = Mapper.toEntity(dto);
-            dao.insert(recipe);
+            Recipe recipe = recipeService.createRecipe(dto);
             response.setStatus(HttpServletResponse.SC_CREATED);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
@@ -49,7 +61,7 @@ public class RecipeServlet extends HttpServlet {
             String json = mapper.writeValueAsString(recipe);
             response.getWriter().write(json);
         } catch (SQLException e) {
-            sendError(response, 500, "Erro ao inserir receita", e);
+            sendError(response, 500, "Error on insert recipe", e);
         }
     }
 
@@ -58,7 +70,7 @@ public class RecipeServlet extends HttpServlet {
             throws ServletException, IOException {
         String idParam = request.getParameter("id");
         if (idParam == null) {
-            sendError(response, 400, "Id não fornecido", null);
+            sendError(response, 400, "Id not provided", null);
             return;
         }
         try {
@@ -66,10 +78,9 @@ public class RecipeServlet extends HttpServlet {
 
             RecipeCreateDTO dto = mapper.readValue(request.getReader(), RecipeCreateDTO.class);
 
-            Recipe recipe = Mapper.toEntity(dto);
-            recipe.setId(id);
+            recipeService.updateRecipe(id, dto);
 
-            dao.update(recipe);
+            response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");
             response.getWriter().write("{\"message\": \"Receita atualizada com sucesso\"}");
         } catch (SQLException e) {
@@ -82,18 +93,20 @@ public class RecipeServlet extends HttpServlet {
             throws ServletException, IOException {
         String idParam = request.getParameter("id");
         if (idParam == null) {
-            sendError(response, 400, "ID não fornecido", null);
+            sendError(response, 400, "ID not provided", null);
             return;
         }
 
         try {
             int id = Integer.parseInt(idParam);
-            dao.delete(id);
-            response.getWriter().write("{\"message\": \"Receita deletada com sucesso\"}");
+
+            recipeService.deleteRecipe(id);
+
+            response.getWriter().write("{\"message\": \"Recipe deleted\"}");
         } catch (NumberFormatException e) {
-            sendError(response, 400, "ID inválido", e);
+            sendError(response, 400, "Invalid ID", e);
         } catch (SQLException e) {
-            sendError(response, 500, "Erro ao deletar receita", e);
+            sendError(response, 500, "Error to delete recipe", e);
         }
     }
 
@@ -101,12 +114,12 @@ public class RecipeServlet extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-            if ("PATCH".equalsIgnoreCase(request.getMethod())) {
-                doPatchInternal(request, response);
-                return;
-            }
-            super.service(request, response);
-            }
+        if ("PATCH".equalsIgnoreCase(request.getMethod())) {
+            doPatchInternal(request, response);
+            return;
+        }
+        super.service(request, response);
+    }
 
     protected void doPatchInternal(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -114,50 +127,38 @@ public class RecipeServlet extends HttpServlet {
         String path = request.getPathInfo();
 
         if (path == null || !path.matches("/\\d+/ingredients")) {
-            sendError(response, 404, "Invalide Route", null);
+            sendError(response, 404, "Invalid Route", null);
             return;
         }
 
-        int recipeId = Integer.parseInt(path.split("/")[1]);
-
         try {
+
+            int recipeId = Integer.parseInt(path.split("/")[1]);
+
             RecipeIngredientPatchDTO dto =
                     mapper.readValue(request.getReader(), RecipeIngredientPatchDTO.class);
 
-            RecipeIngredientDAO riDAO =
-                    new RecipeIngredientDAO(DatabaseConfig.PROD_DB_URL);
+            recipeIngredientService.patchIngredients(recipeId, dto);
 
-            switch (dto.getAction()) {
-                case "add" -> riDAO.addIngredient(
-                        recipeId,
-                        dto.getIngredientId(),
-                        dto.getQuantity(),
-                        dto.getUnit()
-                );
-
-                case "remove" -> riDAO.removeIngredient(
-                        recipeId,
-                        dto.getIngredientId()
-                );
-
-                case "update" -> riDAO.updateIngredient(
-                        recipeId,
-                        dto.getIngredientId(),
-                        dto.getQuantity(),
-                        dto.getUnit()
-                );
-
-                default -> {
-                    sendError(response, 400, "Invalide Action", null);
-                    return;
-                }
-            }
-
+            response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");
-            response.getWriter().write("{\"message\":\"Updated Ingredients\"}");
+
+            response.getWriter().write(
+                    "{\"message\":\"Updated Ingredients\"}"
+            );
+
+        } catch (NumberFormatException e) {
+
+            sendError(response, 400, "Invalid recipe id", e);
+
+        } catch (IllegalArgumentException e) {
+
+            sendError(response, 400, e.getMessage(), e);
 
         } catch (SQLException e) {
+
             sendError(response, 500, "Error when updating ingredients", e);
+
         }
     }
 
