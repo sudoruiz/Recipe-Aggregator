@@ -1,12 +1,13 @@
 package com.mycompany.recipeaggregator.dao;
 
 import com.mycompany.recipeaggregator.models.RecipeIngredient;
+import com.mycompany.recipeaggregator.repository.RecipeIngredientRepository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeIngredientDAO {
+public class RecipeIngredientDAO implements RecipeIngredientRepository {
 
     private final String url;
 
@@ -54,7 +55,7 @@ public class RecipeIngredientDAO {
         }
     }
 
-    public void addIngredient(int recipeId, int ingredientId, Integer quantity, String unit)
+    public void addIngredient(int recipeId, int ingredientId, int quantity, String unit)
             throws SQLException {
         String sql = """
                 INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit)
@@ -85,7 +86,7 @@ public class RecipeIngredientDAO {
         }
     }
 
-    public void updateIngredient(int recipeId, int ingredientId, Integer quantity, String unit)
+    public void updateIngredient(int recipeId, int ingredientId, int quantity, String unit)
             throws SQLException {
         String sql = """
                 UPDATE recipe_ingredients

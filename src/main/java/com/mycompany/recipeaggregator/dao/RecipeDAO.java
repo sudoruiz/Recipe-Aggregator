@@ -1,11 +1,8 @@
 package com.mycompany.recipeaggregator.dao;
 
-import com.mycompany.recipeaggregator.dto.IngredientCreateDTO;
-import com.mycompany.recipeaggregator.dto.IngredientResponseDTO;
-import com.mycompany.recipeaggregator.dto.RecipeIngredientDTO;
-import com.mycompany.recipeaggregator.dto.RecipeResponseDTO;
 import com.mycompany.recipeaggregator.models.Recipe;
 import com.mycompany.recipeaggregator.models.RecipeIngredient;
+import com.mycompany.recipeaggregator.repository.RecipeRepository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,7 +13,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeDAO {
+public class RecipeDAO implements RecipeRepository {
 
     private final String url;
 
