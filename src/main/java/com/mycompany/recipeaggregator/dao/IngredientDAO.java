@@ -1,13 +1,15 @@
 package com.mycompany.recipeaggregator.dao;
 
+import com.mycompany.recipeaggregator.dto.IngredientResponseDTO;
 import com.mycompany.recipeaggregator.dto.IngredientUsageDTO;
 import com.mycompany.recipeaggregator.models.Ingredient;
+import com.mycompany.recipeaggregator.repository.IngredientRepository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IngredientDAO {
+public class IngredientDAO implements IngredientRepository {
 
     private final String url;
 
@@ -15,7 +17,27 @@ public class IngredientDAO {
         this.url = url;
     }
 
-    public void insert(Ingredient ingredient) throws SQLException {
+    @Override
+    public List<Ingredient> listAll() throws SQLException {
+        List<Ingredient> list = new ArrayList<>();
+        String sql = "SELECT * FROM ingredients";
+
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                list.add(new Ingredient(
+                        rs.getInt("id"),
+                        rs.getString("name")
+                ));
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public Ingredient create(Ingredient ingredient) throws SQLException {
         String sql = "INSERT INTO ingredients (name) VALUES (?)";
 
         try (Connection conn = DriverManager.getConnection(url);
@@ -28,32 +50,7 @@ public class IngredientDAO {
                 ingredient.setId(keys.getInt(1));
             }
         }
-    }
-
-    public List<Ingredient> list() throws SQLException {
-        List<Ingredient> ingredients = new ArrayList<>();
-        String sql = "SELECT * FROM ingredients";
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                ingredients.add(new Ingredient(rs.getInt("id"), rs.getString("name")));
-            }
-        }
-        return ingredients;
-    }
-
-    public Ingredient findById(int id) throws SQLException {
-        String sql = "SELECT * FROM ingredients WHERE id = ?";
-        try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return new Ingredient(rs.getInt("id"), rs.getString("name"));
-            }
-            return null;
-        }
+        return ingredient;
     }
 
     public void delete(int id) throws SQLException {
@@ -65,7 +62,7 @@ public class IngredientDAO {
         }
     }
 
-    public List<IngredientUsageDTO> findMostUsed() throws SQLException {
+    public List<IngredientUsageDTO> listMostUsed() throws SQLException {
         List<IngredientUsageDTO> result = new ArrayList<>();
 
         String sql = """
