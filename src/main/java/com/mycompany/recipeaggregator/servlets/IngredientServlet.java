@@ -5,96 +5,123 @@ import com.mycompany.recipeaggregator.config.DatabaseConfig;
 import com.mycompany.recipeaggregator.dao.IngredientDAO;
 import com.mycompany.recipeaggregator.dto.IngredientCreateDTO;
 import com.mycompany.recipeaggregator.dto.IngredientResponseDTO;
-import com.mycompany.recipeaggregator.dto.IngredientUsageDTO;
-import com.mycompany.recipeaggregator.dto.Mapper;
-import com.mycompany.recipeaggregator.models.Ingredient;
-import jakarta.servlet.ServletException;
+import com.mycompany.recipeaggregator.repository.IngredientRepository;
+import com.mycompany.recipeaggregator.service.IngredientService;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
 
 public class IngredientServlet extends HttpServlet {
 
-    private final IngredientDAO dao = new IngredientDAO(DatabaseConfig.PROD_DB_URL);
+    private IngredientService service;
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    public void init() {
+        IngredientRepository repository =
+                new IngredientDAO(DatabaseConfig.PROD_DB_URL);
+
+        this.service = new IngredientService(repository);
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
+            throws IOException {
+
+        String mostUsedParam = request.getParameter("mostUsed");
 
         try {
-            List<Ingredient> ingredients = dao.list();
-            List<IngredientResponseDTO> dtoList = ingredients.stream()
-                    .map(Mapper::toDTO)
-                    .toList();
 
+            Object result;
+
+            if ("true".equalsIgnoreCase(mostUsedParam)) {
+                result = service.listMostUsed();
+            } else {
+                result = service.listAll();
+            }
+
+            response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");
-            response.getWriter().write(mapper.writeValueAsString(dtoList));
+            response.getWriter()
+                    .write(mapper.writeValueAsString(result));
 
-        } catch (SQLException e) {
-            sendError(response, 500, "Erro ao listar ingredientes", e);
+        } catch (Exception e) {
+            sendError(response, 500, "Error listing ingredients", e);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response)
+            throws IOException {
 
         try {
-            IngredientCreateDTO dto = mapper.readValue(request.getReader(), IngredientCreateDTO.class);
-            Ingredient ingredient = Mapper.toEntity(dto);
 
-            dao.insert(ingredient);
+            IngredientCreateDTO dto =
+                    mapper.readValue(request.getReader(),
+                            IngredientCreateDTO.class);
 
-            IngredientResponseDTO responseDTO = Mapper.toDTO(ingredient);
+            IngredientResponseDTO created =
+                    service.create(dto);
 
             response.setStatus(HttpServletResponse.SC_CREATED);
             response.setContentType("application/json");
-            response.getWriter().write(mapper.writeValueAsString(responseDTO));
+            response.getWriter()
+                    .write(mapper.writeValueAsString(created));
 
-        } catch (SQLException e) {
-            sendError(response, 500, "Erro ao criar ingrediente", e);
+        } catch (IllegalArgumentException e) {
+            sendError(response, 400, e.getMessage(), e);
+        } catch (Exception e) {
+            sendError(response, 500, "Error creating ingredient", e);
         }
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        String idParam = request.getParameter("id");
-        if (idParam == null) {
-            sendError(response, 400, "ID não fornecido", null);
-            return;
-        }
+    protected void doDelete(HttpServletRequest request,
+                            HttpServletResponse response)
+            throws IOException {
 
         try {
-            int id = Integer.parseInt(idParam);
-            dao.delete(id);
 
+            String idParam = request.getParameter("id");
+
+            if (idParam == null) {
+                throw new IllegalArgumentException("ID not provided");
+            }
+
+            int id = Integer.parseInt(idParam);
+
+            service.delete(id);
+
+            response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");
-            response.getWriter().write("{\"message\": \"Ingrediente removido com sucesso\"}");
+            response.getWriter()
+                    .write("{\"message\":\"Ingrediente removido com sucesso\"}");
 
         } catch (NumberFormatException e) {
-            sendError(response, 400, "ID inválido", e);
-        } catch (SQLException e) {
-            sendError(response, 500, "Erro ao remover ingrediente", e);
+            sendError(response, 400, "Invalid ID", e);
+        } catch (IllegalArgumentException e) {
+            sendError(response, 400, e.getMessage(), e);
+        } catch (Exception e) {
+            sendError(response, 500, "Error deleting ingredient", e);
         }
     }
 
-    private void sendError(HttpServletResponse response, int status, String message, Exception e)
+    private void sendError(HttpServletResponse response,
+                           int status,
+                           String message,
+                           Exception e)
             throws IOException {
 
         response.setStatus(status);
         response.setContentType("application/json");
-        response.getWriter().write("{\"error\": \"" + message + "\"}");
+        response.getWriter()
+                .write("{\"error\": \"" + message + "\"}");
 
         if (e != null) {
             e.printStackTrace();
         }
     }
-
-
 }
 
