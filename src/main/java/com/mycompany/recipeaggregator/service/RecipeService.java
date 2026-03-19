@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class RecipeService {
+
     private final RecipeRepository repository;
 
     public RecipeService(RecipeRepository repository) {
@@ -23,7 +24,6 @@ public class RecipeService {
                 .map(Mapper::toDTO)
                 .toList();
     }
-
 
     public Recipe createRecipe(RecipeCreateDTO dto) throws SQLException {
         if (dto.getName() == null || dto.getName().isBlank()) {

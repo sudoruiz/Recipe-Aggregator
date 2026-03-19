@@ -22,14 +22,14 @@ public class RecipeDAO implements RecipeRepository {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            System.out.println("Driver SQlite carregado com sucesso.");
+            System.out.println("Driver SQlite loaded successfully.");
             createTable();
 
         } catch (ClassNotFoundException | SQLException e) {
-            throw new RuntimeException("Erro ao inicializar o DAO: " + e.getMessage(), e);
+            throw new RuntimeException("Error to start DAO: " + e.getMessage(), e);
         }
 
-        System.out.println("Iniciando RecipeDAO");
+        System.out.println("Starting RecipeDAO");
 
     }
 
@@ -111,10 +111,10 @@ public class RecipeDAO implements RecipeRepository {
                         rs.getInt("portions")
                 );
                 recipes.add(recipe);
-                System.out.println("Encontrada a receita: " + rs.getString("name"));
+                System.out.println("Finded recipe: " + rs.getString("name"));
             }
         }
-        System.out.println("Listando receitas");
+        System.out.println("Listing recipes");
 
         return recipes;
     }
