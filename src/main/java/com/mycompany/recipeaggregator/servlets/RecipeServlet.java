@@ -44,7 +44,7 @@ public class RecipeServlet extends HttpServlet {
             response.getWriter().write(mapper.writeValueAsString(dtoList));
 
         } catch (SQLException e) {
-            sendError(response, 500, "Erro ao listar receitas", e);
+            sendError(response, 500, "Error to list recipes", e);
         }
     }
 
@@ -82,9 +82,9 @@ public class RecipeServlet extends HttpServlet {
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");
-            response.getWriter().write("{\"message\": \"Receita atualizada com sucesso\"}");
+            response.getWriter().write("{\"message\": \"Recipe updated successfully\"}");
         } catch (SQLException e) {
-            sendError(response, 500, "Erro ao atualizar receita", e);
+            sendError(response, 500, "Error to update recipe", e);
         }
     }
 
