@@ -1,9 +1,9 @@
 package com.mycompany.recipeaggregator.servlets;
 
 import com.mycompany.recipeaggregator.models.RecipeIngredient;
+import com.mycompany.recipeaggregator.repository.CrudRepository;
 import com.mycompany.recipeaggregator.repository.RecipeIngredientRepository;
 import com.mycompany.recipeaggregator.service.RecipeIngredientService;
-import com.mycompany.recipeaggregator.repository.RecipeRepository;
 import com.mycompany.recipeaggregator.service.RecipeService;
 import com.mycompany.recipeaggregator.config.DatabaseConfig;
 import com.mycompany.recipeaggregator.models.Recipe;
@@ -27,7 +27,7 @@ public class RecipeServlet extends HttpServlet {
 
     @Override
     public void init() {
-        RecipeRepository repo =
+        CrudRepository repo =
                 new RecipeDAO(DatabaseConfig.PROD_DB_URL);
 
         RecipeIngredientRepository ingredientRepo =

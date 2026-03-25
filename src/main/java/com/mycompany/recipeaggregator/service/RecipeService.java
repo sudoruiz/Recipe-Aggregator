@@ -4,16 +4,16 @@ import com.mycompany.recipeaggregator.dto.Mapper;
 import com.mycompany.recipeaggregator.dto.RecipeCreateDTO;
 import com.mycompany.recipeaggregator.dto.RecipeResponseDTO;
 import com.mycompany.recipeaggregator.models.Recipe;
-import com.mycompany.recipeaggregator.repository.RecipeRepository;
+import com.mycompany.recipeaggregator.repository.CrudRepository;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class RecipeService {
 
-    private final RecipeRepository repository;
+    private final CrudRepository repository;
 
-    public RecipeService(RecipeRepository repository) {
+    public RecipeService(CrudRepository repository) {
         this.repository = repository;
     }
 
@@ -32,7 +32,7 @@ public class RecipeService {
 
         Recipe recipe = Mapper.toEntity(dto);
 
-        repository.insert(recipe);
+        repository.save(recipe);
 
         return recipe;
     }
@@ -49,7 +49,7 @@ public class RecipeService {
         Recipe recipe = Mapper.toEntity(dto);
         recipe.setId(id);
 
-        repository.update(recipe);
+        repository.save(recipe);
 
         return recipe;
     }

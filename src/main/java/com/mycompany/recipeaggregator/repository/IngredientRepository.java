@@ -7,13 +7,7 @@ import com.mycompany.recipeaggregator.models.Ingredient;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface IngredientRepository {
-
-    List<Ingredient> listAll() throws SQLException;
+public interface IngredientRepository extends CrudRepository<Ingredient> {
 
     List<IngredientUsageDTO> listMostUsed() throws SQLException;
-
-    Ingredient create(Ingredient ingredient)  throws SQLException;
-
-    void delete(int id) throws SQLException;
 }

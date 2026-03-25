@@ -2,7 +2,7 @@ package com.mycompany.recipeaggregator.dao;
 
 import com.mycompany.recipeaggregator.models.Recipe;
 import com.mycompany.recipeaggregator.models.RecipeIngredient;
-import com.mycompany.recipeaggregator.repository.RecipeRepository;
+import com.mycompany.recipeaggregator.repository.CrudRepository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,7 +13,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeDAO implements RecipeRepository {
+public class RecipeDAO implements CrudRepository<Recipe> {
 
     private final String url;
 
@@ -60,6 +60,16 @@ public class RecipeDAO implements RecipeRepository {
             stmt.execute(sqlIngredients);
             stmt.execute(sqlRecipeIngredients);
         }
+    }
+
+    @Override
+    public Recipe save(Recipe recipe) throws SQLException {
+        if (recipe.getId() == 0) {
+            insert(recipe);
+        } else {
+            update(recipe);
+        }
+        return recipe;
     }
 
     public void insert(Recipe recipe) throws SQLException {

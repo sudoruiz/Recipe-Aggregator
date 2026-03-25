@@ -3,7 +3,7 @@ package com.mycompany.recipeaggregator.service;
 import com.mycompany.recipeaggregator.dto.RecipeCreateDTO;
 import com.mycompany.recipeaggregator.dto.RecipeResponseDTO;
 import com.mycompany.recipeaggregator.models.Recipe;
-import com.mycompany.recipeaggregator.repository.RecipeRepository;
+import com.mycompany.recipeaggregator.repository.CrudRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 class RecipeServiceTest {
 
     @Mock
-    private RecipeRepository repository;
+    private CrudRepository repository;
 
     @InjectMocks
     private RecipeService service;
@@ -51,7 +51,7 @@ class RecipeServiceTest {
         Recipe result = service.createRecipe(dto);
 
         assertEquals("Pizza", result.getName());
-        verify(repository).insert(any(Recipe.class));
+        verify(repository).save(any(Recipe.class));
     }
 
     @Test
@@ -62,7 +62,7 @@ class RecipeServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> service.createRecipe(dto));
 
-        verify(repository, never()).insert(any());
+        verify(repository, never()).save(any());
     }
 
    @Test
@@ -72,7 +72,7 @@ class RecipeServiceTest {
 
         service.updateRecipe(1, dto);
 
-        verify(repository).update(any(Recipe.class));
+        verify(repository).save(any(Recipe.class));
     }
 
   @Test
@@ -83,7 +83,7 @@ class RecipeServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> service.updateRecipe(0, dto));
 
-        verify(repository, never()).update(any());
+        verify(repository, never()).save(any());
     }
 
    @Test
@@ -91,7 +91,7 @@ class RecipeServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> service.updateRecipe(1, null));
 
-        verify(repository, never()).update(any());
+        verify(repository, never()).save(any());
     }
 
   @Test

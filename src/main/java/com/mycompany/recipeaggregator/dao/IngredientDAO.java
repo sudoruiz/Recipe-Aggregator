@@ -18,7 +18,7 @@ public class IngredientDAO implements IngredientRepository {
     }
 
     @Override
-    public List<Ingredient> listAll() throws SQLException {
+    public List<Ingredient> list() throws SQLException {
         List<Ingredient> list = new ArrayList<>();
         String sql = "SELECT * FROM ingredients";
 
@@ -37,7 +37,7 @@ public class IngredientDAO implements IngredientRepository {
     }
 
     @Override
-    public Ingredient create(Ingredient ingredient) throws SQLException {
+    public Ingredient save(Ingredient ingredient) throws SQLException {
         String sql = "INSERT INTO ingredients (name) VALUES (?)";
 
         try (Connection conn = DriverManager.getConnection(url);
@@ -53,6 +53,7 @@ public class IngredientDAO implements IngredientRepository {
         return ingredient;
     }
 
+    @Override
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM ingredients WHERE id = ?";
         try (Connection conn = DriverManager.getConnection(url);
