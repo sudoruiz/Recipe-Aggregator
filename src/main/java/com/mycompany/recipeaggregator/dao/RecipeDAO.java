@@ -130,9 +130,7 @@ public class RecipeDAO implements RecipeRepository {
             pstmt.setInt(5, recipe.getId());
             pstmt.executeUpdate();
         }
-
         return recipe;
-
     }
 
     public void delete(int id) throws SQLException {
