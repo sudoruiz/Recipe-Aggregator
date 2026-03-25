@@ -8,6 +8,6 @@ import java.util.List;
 public interface RecipeRepository {
     List<Recipe> list() throws SQLException;
     void insert(Recipe recipe) throws SQLException;
-    void update(Recipe recipe) throws SQLException;
+    Recipe update(Recipe recipe) throws SQLException;
     void delete(int id) throws SQLException;
 }

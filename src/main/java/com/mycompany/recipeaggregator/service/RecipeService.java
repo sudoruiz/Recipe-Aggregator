@@ -37,7 +37,7 @@ public class RecipeService {
         return recipe;
     }
 
-    public void updateRecipe(int id, RecipeCreateDTO dto) throws SQLException {
+    public Recipe updateRecipe(int id, RecipeCreateDTO dto) throws SQLException {
         if (id <= 0) {
             throw new IllegalArgumentException("Invalid id");
         }
@@ -50,6 +50,8 @@ public class RecipeService {
         recipe.setId(id);
 
         repository.update(recipe);
+
+        return recipe;
     }
 
     public void deleteRecipe(int id) throws SQLException {

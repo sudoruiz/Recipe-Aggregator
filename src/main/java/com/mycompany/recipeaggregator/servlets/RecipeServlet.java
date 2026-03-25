@@ -78,11 +78,13 @@ public class RecipeServlet extends HttpServlet {
 
             RecipeCreateDTO dto = mapper.readValue(request.getReader(), RecipeCreateDTO.class);
 
-            recipeService.updateRecipe(id, dto);
+            Recipe recipe = recipeService.updateRecipe(id, dto);
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");
-            response.getWriter().write("{\"message\": \"Recipe updated successfully\"}");
+
+            String json = mapper.writeValueAsString(recipe);
+            response.getWriter().write(json);
         } catch (SQLException e) {
             sendError(response, 500, "Error to update recipe", e);
         }
