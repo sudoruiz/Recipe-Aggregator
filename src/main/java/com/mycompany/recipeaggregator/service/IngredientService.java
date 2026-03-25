@@ -20,7 +20,7 @@ public class IngredientService {
 
     public List<IngredientResponseDTO> listAll() throws SQLException {
 
-        List<Ingredient> ingredients = repository.listAll();
+        List<Ingredient> ingredients = repository.list();
 
         return ingredients.stream()
                 .map(Mapper::toDTO)
@@ -36,7 +36,7 @@ public class IngredientService {
 
         Ingredient entity = Mapper.toEntity(dto);
 
-        Ingredient saved = repository.create(entity);
+        Ingredient saved = repository.save(entity);
 
         return Mapper.toDTO(saved);
     }

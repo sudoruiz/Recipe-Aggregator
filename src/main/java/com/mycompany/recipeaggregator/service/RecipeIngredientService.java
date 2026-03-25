@@ -1,9 +1,11 @@
 package com.mycompany.recipeaggregator.service;
 
 import com.mycompany.recipeaggregator.dto.RecipeIngredientPatchDTO;
+import com.mycompany.recipeaggregator.models.RecipeIngredient;
 import com.mycompany.recipeaggregator.repository.RecipeIngredientRepository;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class RecipeIngredientService {
 
@@ -13,7 +15,7 @@ public class RecipeIngredientService {
         this.repository = repository;
     }
 
-    public void patchIngredients(int recipeId, RecipeIngredientPatchDTO dto)
+    public List<RecipeIngredient> patchIngredients(int recipeId, RecipeIngredientPatchDTO dto)
             throws SQLException {
 
         if (recipeId <= 0) {
@@ -63,6 +65,7 @@ public class RecipeIngredientService {
 
             default -> throw new IllegalArgumentException("Invalid action");
         }
+        return repository.findByRecipeId(recipeId);
     }
 
     private void validateQuantity(RecipeIngredientPatchDTO dto) {

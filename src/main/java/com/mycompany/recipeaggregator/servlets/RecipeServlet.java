@@ -1,8 +1,9 @@
 package com.mycompany.recipeaggregator.servlets;
 
+import com.mycompany.recipeaggregator.models.RecipeIngredient;
+import com.mycompany.recipeaggregator.repository.CrudRepository;
 import com.mycompany.recipeaggregator.repository.RecipeIngredientRepository;
 import com.mycompany.recipeaggregator.service.RecipeIngredientService;
-import com.mycompany.recipeaggregator.repository.RecipeRepository;
 import com.mycompany.recipeaggregator.service.RecipeService;
 import com.mycompany.recipeaggregator.config.DatabaseConfig;
 import com.mycompany.recipeaggregator.models.Recipe;
@@ -10,9 +11,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.recipeaggregator.dao.*;
 import com.mycompany.recipeaggregator.dto.*;
 import jakarta.servlet.http.*;
+
 import java.sql.SQLException;
 import java.io.IOException;
+
 import jakarta.servlet.*;
+
 import java.util.List;
 
 public class RecipeServlet extends HttpServlet {
@@ -23,7 +27,7 @@ public class RecipeServlet extends HttpServlet {
 
     @Override
     public void init() {
-        RecipeRepository repo =
+        CrudRepository repo =
                 new RecipeDAO(DatabaseConfig.PROD_DB_URL);
 
         RecipeIngredientRepository ingredientRepo =
@@ -78,35 +82,15 @@ public class RecipeServlet extends HttpServlet {
 
             RecipeCreateDTO dto = mapper.readValue(request.getReader(), RecipeCreateDTO.class);
 
-            recipeService.updateRecipe(id, dto);
+            Recipe recipe = recipeService.updateRecipe(id, dto);
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");
-            response.getWriter().write("{\"message\": \"Recipe updated successfully\"}");
+
+            String json = mapper.writeValueAsString(recipe);
+            response.getWriter().write(json);
         } catch (SQLException e) {
             sendError(response, 500, "Error to update recipe", e);
-        }
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String idParam = request.getParameter("id");
-        if (idParam == null) {
-            sendError(response, 400, "ID not provided", null);
-            return;
-        }
-
-        try {
-            int id = Integer.parseInt(idParam);
-
-            recipeService.deleteRecipe(id);
-
-            response.getWriter().write("{\"message\": \"Recipe deleted\"}");
-        } catch (NumberFormatException e) {
-            sendError(response, 400, "Invalid ID", e);
-        } catch (SQLException e) {
-            sendError(response, 500, "Error to delete recipe", e);
         }
     }
 
@@ -138,14 +122,13 @@ public class RecipeServlet extends HttpServlet {
             RecipeIngredientPatchDTO dto =
                     mapper.readValue(request.getReader(), RecipeIngredientPatchDTO.class);
 
-            recipeIngredientService.patchIngredients(recipeId, dto);
+            List<RecipeIngredient> updatedIngredients =
+                    recipeIngredientService.patchIngredients(recipeId, dto);
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");
 
-            response.getWriter().write(
-                    "{\"message\":\"Updated Ingredients\"}"
-            );
+            mapper.writeValue(response.getWriter(), updatedIngredients);
 
         } catch (NumberFormatException e) {
 
@@ -159,6 +142,28 @@ public class RecipeServlet extends HttpServlet {
 
             sendError(response, 500, "Error when updating ingredients", e);
 
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String idParam = request.getParameter("id");
+        if (idParam == null) {
+            sendError(response, 400, "ID not provided", null);
+            return;
+        }
+
+        try {
+            int id = Integer.parseInt(idParam);
+
+            recipeService.deleteRecipe(id);
+
+            response.getWriter().write("{\"message\": \"Recipe deleted\"}");
+        } catch (NumberFormatException e) {
+            sendError(response, 400, "Invalid ID", e);
+        } catch (SQLException e) {
+            sendError(response, 500, "Error to delete recipe", e);
         }
     }
 
