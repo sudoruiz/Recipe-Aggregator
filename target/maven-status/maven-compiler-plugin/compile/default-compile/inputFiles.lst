@@ -17,8 +17,8 @@
 /home/renan-ruiz/Desktop/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/dto/Mapper.java
 /home/renan-ruiz/Desktop/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/servlets/RecipeServlet.java
 /home/renan-ruiz/Desktop/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/servlets/IngredientServlet.java
-/home/renan-ruiz/Desktop/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/repository/RecipeRepository.java
 /home/renan-ruiz/Desktop/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/dao/RecipeDAO.java
+/home/renan-ruiz/Desktop/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/repository/CrudRepository.java
 /home/renan-ruiz/Desktop/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/dto/RecipeIngredientPatchDTO.java
 /home/renan-ruiz/Desktop/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/models/Recipe.java
 /home/renan-ruiz/Desktop/Recipe-Aggregator/src/main/java/com/mycompany/recipeaggregator/repository/IngredientRepository.java

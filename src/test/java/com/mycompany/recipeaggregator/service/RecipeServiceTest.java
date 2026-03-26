@@ -50,6 +50,7 @@ class RecipeServiceTest {
 
         Recipe result = service.createRecipe(dto);
 
+        assertNotNull(result);
         assertEquals("Pizza", result.getName());
         verify(repository).insert(any(Recipe.class));
     }
@@ -70,8 +71,11 @@ class RecipeServiceTest {
         RecipeCreateDTO dto = new RecipeCreateDTO();
         dto.setName("Lasanha");
 
-        service.updateRecipe(1, dto);
+        Recipe result = service.updateRecipe(1, dto);
 
+        assertNotNull(result);
+        assertEquals(1, result.getId());
+        assertEquals("Lasanha", result.getName());
         verify(repository).update(any(Recipe.class));
     }
 
