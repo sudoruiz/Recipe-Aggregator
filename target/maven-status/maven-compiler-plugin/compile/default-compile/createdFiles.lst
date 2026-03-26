@@ -21,3 +21,4 @@ com/mycompany/recipeaggregator/servlets/RecipeServlet.class
 com/mycompany/recipeaggregator/config/DatabaseConfig.class
 com/mycompany/recipeaggregator/dto/IngredientUsageDTO.class
 com/mycompany/recipeaggregator/servlets/IngredientServlet.class
+com/mycompany/recipeaggregator/repository/CrudRepository.class
