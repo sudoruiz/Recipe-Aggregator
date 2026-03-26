@@ -38,12 +38,13 @@ public class RecipeIngredientService {
 
             case "add" -> {
                 validateQuantity(dto);
-                repository.addIngredient(
+                RecipeIngredient ri = new RecipeIngredient(
                         recipeId,
                         dto.getIngredientId(),
                         dto.getQuantity(),
                         dto.getUnit()
                 );
+                repository.insert(ri);
             }
 
             case "remove" -> {
@@ -55,12 +56,13 @@ public class RecipeIngredientService {
 
             case "update" -> {
                 validateQuantity(dto);
-                repository.updateIngredient(
+                RecipeIngredient ri = new RecipeIngredient(
                         recipeId,
                         dto.getIngredientId(),
                         dto.getQuantity(),
                         dto.getUnit()
                 );
+                repository.update(ri);
             }
 
             default -> throw new IllegalArgumentException("Invalid action");

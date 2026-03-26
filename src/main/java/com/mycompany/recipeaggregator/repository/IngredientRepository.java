@@ -1,6 +1,5 @@
 package com.mycompany.recipeaggregator.repository;
 
-import com.mycompany.recipeaggregator.dto.IngredientCreateDTO;
 import com.mycompany.recipeaggregator.dto.IngredientUsageDTO;
 import com.mycompany.recipeaggregator.models.Ingredient;
 

@@ -32,7 +32,7 @@ public class RecipeService {
 
         Recipe recipe = Mapper.toEntity(dto);
 
-        repository.save(recipe);
+        repository.insert(recipe);
 
         return recipe;
     }
@@ -49,7 +49,7 @@ public class RecipeService {
         Recipe recipe = Mapper.toEntity(dto);
         recipe.setId(id);
 
-        repository.save(recipe);
+        repository.update(recipe);
 
         return recipe;
     }

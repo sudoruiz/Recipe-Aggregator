@@ -97,7 +97,7 @@ public class IngredientServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");
             response.getWriter()
-                    .write("{\"message\":\"Ingrediente removido com sucesso\"}");
+                    .write("{\"message\":\"Ingredient deleted successfully\"}");
 
         } catch (NumberFormatException e) {
             sendError(response, 400, "Invalid ID", e);

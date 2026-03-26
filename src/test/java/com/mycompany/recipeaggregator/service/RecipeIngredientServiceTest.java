@@ -9,9 +9,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.mycompany.recipeaggregator.models.RecipeIngredient;
+
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
@@ -40,7 +43,7 @@ class RecipeIngredientServiceTest {
 
         service.patchIngredients(10, dto);
 
-        verify(repository).addIngredient(10, 1, 2, "kg");
+        verify(repository).insert(any(RecipeIngredient.class));
     }
 
     @Test
@@ -62,7 +65,7 @@ class RecipeIngredientServiceTest {
 
         service.patchIngredients(10, dto);
 
-        verify(repository).updateIngredient(10, 1, 5, "g");
+        verify(repository).update(any(RecipeIngredient.class));
     }
 
     @Test

@@ -63,16 +63,7 @@ public class RecipeDAO implements CrudRepository<Recipe> {
     }
 
     @Override
-    public Recipe save(Recipe recipe) throws SQLException {
-        if (recipe.getId() == 0) {
-            insert(recipe);
-        } else {
-            update(recipe);
-        }
-        return recipe;
-    }
-
-    public void insert(Recipe recipe) throws SQLException {
+    public Recipe insert(Recipe recipe) throws SQLException {
         String sql = "INSERT INTO recipes(name, description, preparationTime, portions) VALUES(?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -95,6 +86,7 @@ public class RecipeDAO implements CrudRepository<Recipe> {
                 }
             }
         }
+        return recipe;
     }
 
     public List<Recipe> list() throws SQLException {
@@ -110,7 +102,7 @@ public class RecipeDAO implements CrudRepository<Recipe> {
                     RecipeIngredientDAO riDAO = new RecipeIngredientDAO(url);
                     ingredients = riDAO.findByRecipeId(rs.getInt("id"));
                 } catch (Exception e) {
-                    throw new SQLException("Erro ao converter ingredientes do banco", e);
+                    throw new SQLException("Error to convert ingredients of database", e);
                 }
                 Recipe recipe = new Recipe(
                         rs.getInt("id"),
@@ -129,6 +121,7 @@ public class RecipeDAO implements CrudRepository<Recipe> {
         return recipes;
     }
 
+    @Override
     public Recipe update(Recipe recipe) throws SQLException {
         String sql = "UPDATE recipes SET name = ?, description = ?, preparationTime = ?, portions = ? WHERE id = ?";
         try (Connection conn = DriverManager.getConnection(url); PreparedStatement pstmt = conn.prepareStatement(sql)) {
