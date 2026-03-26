@@ -13,7 +13,6 @@ com/mycompany/recipeaggregator/dao/IngredientDAO.class
 com/mycompany/recipeaggregator/dto/IngredientCreateDTO.class
 com/mycompany/recipeaggregator/dto/RecipeResponseDTO.class
 com/mycompany/recipeaggregator/dto/RecipeCreateDTO.class
-com/mycompany/recipeaggregator/repository/RecipeRepository.class
 com/mycompany/recipeaggregator/dao/RecipeIngredientDAO.class
 com/mycompany/recipeaggregator/repository/IngredientRepository.class
 com/mycompany/recipeaggregator/Main.class

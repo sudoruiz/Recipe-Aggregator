@@ -9,11 +9,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.SQLException;
+import com.mycompany.recipeaggregator.models.RecipeIngredient;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
+import java.sql.SQLException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RecipeIngredientServiceTest {
@@ -38,9 +41,21 @@ class RecipeIngredientServiceTest {
         dto.setQuantity(2);
         dto.setUnit("kg");
 
-        service.patchIngredients(10, dto);
+        var expected = List.of(
+                new RecipeIngredient(10, 1, 2, "kg")
+        );
 
-        verify(repository).addIngredient(10, 1, 2, "kg");
+        when(repository.findByRecipeId(10)).thenReturn(expected);
+
+        var result = service.patchIngredients(10, dto);
+
+        assertEquals(1, result.size());
+        assertEquals(1, result.get(0).getIngredientId());
+        assertEquals(2, result.get(0).getQuantity());
+        assertEquals("kg", result.get(0).getUnit());
+
+        verify(repository).insert(any(RecipeIngredient.class));
+        verify(repository).findByRecipeId(10);
     }
 
     @Test
@@ -48,9 +63,16 @@ class RecipeIngredientServiceTest {
         dto.setAction("remove");
         dto.setIngredientId(1);
 
-        service.patchIngredients(10, dto);
+        List<RecipeIngredient> expected = List.of();
+
+        when(repository.findByRecipeId(10)).thenReturn(expected);
+
+        var result = service.patchIngredients(10, dto);
+
+        assertTrue(result.isEmpty());
 
         verify(repository).removeIngredient(10, 1);
+        verify(repository).findByRecipeId(10);
     }
 
     @Test
@@ -60,20 +82,21 @@ class RecipeIngredientServiceTest {
         dto.setQuantity(5);
         dto.setUnit("g");
 
-        service.patchIngredients(10, dto);
+        var expected = List.of(
+                new RecipeIngredient(10, 1, 5, "g")
+        );
 
-        verify(repository).updateIngredient(10, 1, 5, "g");
-    }
+        when(repository.findByRecipeId(10)).thenReturn(expected);
 
-    @Test
-    void shouldThrowWhenRecipeIdInvalid() {
-        dto.setAction("remove");
-        dto.setIngredientId(1);
+        var result = service.patchIngredients(10, dto);
 
-        assertThrows(IllegalArgumentException.class,
-                () -> service.patchIngredients(0, dto));
+        var ingredient = result.get(0);
 
-        verifyNoInteractions(repository);
+        assertEquals(5, ingredient.getQuantity());
+        assertEquals("g", ingredient.getUnit());
+
+        verify(repository).update(any(RecipeIngredient.class));
+        verify(repository).findByRecipeId(10);
     }
 
     @Test

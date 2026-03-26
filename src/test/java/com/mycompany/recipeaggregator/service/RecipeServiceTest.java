@@ -50,8 +50,9 @@ class RecipeServiceTest {
 
         Recipe result = service.createRecipe(dto);
 
+        assertNotNull(result);
         assertEquals("Pizza", result.getName());
-        verify(repository).save(any(Recipe.class));
+        verify(repository).insert(any(Recipe.class));
     }
 
     @Test
@@ -62,7 +63,7 @@ class RecipeServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> service.createRecipe(dto));
 
-        verify(repository, never()).save(any());
+        verify(repository, never()).insert(any());
     }
 
    @Test
@@ -70,9 +71,12 @@ class RecipeServiceTest {
         RecipeCreateDTO dto = new RecipeCreateDTO();
         dto.setName("Lasanha");
 
-        service.updateRecipe(1, dto);
+        Recipe result = service.updateRecipe(1, dto);
 
-        verify(repository).save(any(Recipe.class));
+        assertNotNull(result);
+        assertEquals(1, result.getId());
+        assertEquals("Lasanha", result.getName());
+        verify(repository).update(any(Recipe.class));
     }
 
   @Test
@@ -83,7 +87,7 @@ class RecipeServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> service.updateRecipe(0, dto));
 
-        verify(repository, never()).save(any());
+        verify(repository, never()).update(any());
     }
 
    @Test
@@ -91,7 +95,7 @@ class RecipeServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> service.updateRecipe(1, null));
 
-        verify(repository, never()).save(any());
+        verify(repository, never()).update(any());
     }
 
   @Test

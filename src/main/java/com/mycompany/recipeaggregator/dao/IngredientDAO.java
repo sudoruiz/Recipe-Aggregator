@@ -1,6 +1,5 @@
 package com.mycompany.recipeaggregator.dao;
 
-import com.mycompany.recipeaggregator.dto.IngredientResponseDTO;
 import com.mycompany.recipeaggregator.dto.IngredientUsageDTO;
 import com.mycompany.recipeaggregator.models.Ingredient;
 import com.mycompany.recipeaggregator.repository.IngredientRepository;
@@ -37,7 +36,7 @@ public class IngredientDAO implements IngredientRepository {
     }
 
     @Override
-    public Ingredient save(Ingredient ingredient) throws SQLException {
+    public Ingredient insert(Ingredient ingredient) throws SQLException {
         String sql = "INSERT INTO ingredients (name) VALUES (?)";
 
         try (Connection conn = DriverManager.getConnection(url);
@@ -49,6 +48,19 @@ public class IngredientDAO implements IngredientRepository {
             if (keys.next()) {
                 ingredient.setId(keys.getInt(1));
             }
+        }
+        return ingredient;
+    }
+
+    @Override
+    public Ingredient update(Ingredient ingredient) throws SQLException {
+        String sql = "UPDATE ingredients SET name = ? WHERE id = ?";
+
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, ingredient.getName());
+            pstmt.setInt(2, ingredient.getId());
+            pstmt.executeUpdate();
         }
         return ingredient;
     }
