@@ -9,8 +9,6 @@ public interface RecipeIngredientRepository extends CrudRepository<RecipeIngredi
 
     List<RecipeIngredient> findByRecipeId(int recipeId) throws SQLException;
 
-    void deleteByRecipeId(int recipeId) throws SQLException;
-
     void removeIngredient(int recipeId, int ingredientId) throws SQLException;
 }
 

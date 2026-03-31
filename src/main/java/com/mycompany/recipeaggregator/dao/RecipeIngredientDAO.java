@@ -97,11 +97,6 @@ public class RecipeIngredientDAO implements RecipeIngredientRepository {
     }
 
     @Override
-    public void deleteByRecipeId(int recipeId) throws SQLException {
-        delete(recipeId);
-    }
-
-    @Override
     public void removeIngredient(int recipeId, int ingredientId) throws SQLException {
         String sql = """
                 DELETE FROM recipe_ingredients

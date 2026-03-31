@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.mycompany.recipeaggregator.service.IngredientServiceTest" time="0.068" tests="5" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="21"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.class.path" value="/home/renan-ruiz/Desktop/Recipe-Aggregator/target/test-classes:/home/renan-ruiz/Desktop/Recipe-Aggregator/target/classes:/home/renan-ruiz/.m2/repository/com/h2database/h2/2.2.224/h2-2.2.224.jar:/home/renan-ruiz/.m2/repository/org/xerial/sqlite-jdbc/3.47.1.0/sqlite-jdbc-3.47.1.0.jar:/home/renan-ruiz/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.3/jackson-databind-2.15.3.jar:/home/renan-ruiz/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.3/jackson-annotations-2.15.3.jar:/home/renan-ruiz/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.3/jackson-core-2.15.3.jar:/home/renan-ruiz/.m2/repository/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0.jar:/home/renan-ruiz/.m2/repository/org/junit/jupiter/junit-jupiter/5.11.0-M1/junit-jupiter-5.11.0-M1.jar:/home/renan-ruiz/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.11.0-M1/junit-jupiter-api-5.11.0-M1.jar:/home/renan-ruiz/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/home/renan-ruiz/.m2/repository/org/junit/platform/junit-platform-commons/1.11.0-M1/junit-platform-commons-1.11.0-M1.jar:/home/renan-ruiz/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/renan-ruiz/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.11.0-M1/junit-jupiter-params-5.11.0-M1.jar:/home/renan-ruiz/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.11.0-M1/junit-jupiter-engine-5.11.0-M1.jar:/home/renan-ruiz/.m2/repository/org/junit/platform/junit-platform-engine/1.11.0-M1/junit-platform-engine-1.11.0-M1.jar:/home/renan-ruiz/.m2/repository/org/mockito/mockito-core/5.20.0/mockito-core-5.20.0.jar:/home/renan-ruiz/.m2/repository/net/bytebuddy/byte-buddy/1.17.7/byte-buddy-1.17.7.jar:/home/renan-ruiz/.m2/repository/net/bytebuddy/byte-buddy-agent/1.17.7/byte-buddy-agent-1.17.7.jar:/home/renan-ruiz/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/home/renan-ruiz/.m2/repository/org/mockito/mockito-junit-jupiter/5.20.0/mockito-junit-jupiter-5.20.0.jar:"/>
+    <property name="java.vm.vendor" value="Alibaba"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.vendor.url" value="http://www.alibabagroup.com"/>
+    <property name="user.timezone" value="America/Sao_Paulo"/>
+    <property name="os.name" value="Linux"/>
+    <property name="java.vm.specification.version" value="21"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.boot.library.path" value="/home/renan-ruiz/.sdkman/candidates/java/21.0.8-albba/lib"/>
+    <property name="sun.java.command" value="/home/renan-ruiz/Desktop/Recipe-Aggregator/target/surefire/surefirebooter-20260331152817715_3.jar /home/renan-ruiz/Desktop/Recipe-Aggregator/target/surefire 2026-03-31T15-28-17_407-jvmRun1 surefire-20260331152817715_1tmp surefire_0-20260331152817715_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="/home/renan-ruiz/Desktop/Recipe-Aggregator/target/test-classes:/home/renan-ruiz/Desktop/Recipe-Aggregator/target/classes:/home/renan-ruiz/.m2/repository/com/h2database/h2/2.2.224/h2-2.2.224.jar:/home/renan-ruiz/.m2/repository/org/xerial/sqlite-jdbc/3.47.1.0/sqlite-jdbc-3.47.1.0.jar:/home/renan-ruiz/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.3/jackson-databind-2.15.3.jar:/home/renan-ruiz/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.3/jackson-annotations-2.15.3.jar:/home/renan-ruiz/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.3/jackson-core-2.15.3.jar:/home/renan-ruiz/.m2/repository/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0.jar:/home/renan-ruiz/.m2/repository/org/junit/jupiter/junit-jupiter/5.11.0-M1/junit-jupiter-5.11.0-M1.jar:/home/renan-ruiz/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.11.0-M1/junit-jupiter-api-5.11.0-M1.jar:/home/renan-ruiz/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/home/renan-ruiz/.m2/repository/org/junit/platform/junit-platform-commons/1.11.0-M1/junit-platform-commons-1.11.0-M1.jar:/home/renan-ruiz/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/renan-ruiz/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.11.0-M1/junit-jupiter-params-5.11.0-M1.jar:/home/renan-ruiz/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.11.0-M1/junit-jupiter-engine-5.11.0-M1.jar:/home/renan-ruiz/.m2/repository/org/junit/platform/junit-platform-engine/1.11.0-M1/junit-platform-engine-1.11.0-M1.jar:/home/renan-ruiz/.m2/repository/org/mockito/mockito-core/5.20.0/mockito-core-5.20.0.jar:/home/renan-ruiz/.m2/repository/net/bytebuddy/byte-buddy/1.17.7/byte-buddy-1.17.7.jar:/home/renan-ruiz/.m2/repository/net/bytebuddy/byte-buddy-agent/1.17.7/byte-buddy-agent-1.17.7.jar:/home/renan-ruiz/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/home/renan-ruiz/.m2/repository/org/mockito/mockito-junit-jupiter/5.20.0/mockito-junit-jupiter-5.20.0.jar:"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="/home/renan-ruiz"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2025-07-15"/>
+    <property name="java.home" value="/home/renan-ruiz/.sdkman/candidates/java/21.0.8-albba"/>
+    <property name="file.separator" value="/"/>
+    <property name="basedir" value="/home/renan-ruiz/Desktop/Recipe-Aggregator"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="surefire.real.class.path" value="/home/renan-ruiz/Desktop/Recipe-Aggregator/target/surefire/surefirebooter-20260331152817715_3.jar"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="21.0.8.0.8"/>
+    <property name="user.name" value="renan-ruiz"/>
+    <property name="stdout.encoding" value="UTF-8"/>
+    <property name="path.separator" value=":"/>
+    <property name="os.version" value="6.17.0-14-generic"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="java.vendor.version" value="(Alibaba Dragonwell Standard Edition)-21.0.8.0.8+9-GA"/>
+    <property name="localRepository" value="/home/renan-ruiz/.m2/repository"/>
+    <property name="java.vendor.url.bug" value="mailto:dragonwell_use@googlegroups.com"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="java.version" value="21.0.8.0.8"/>
+    <property name="user.dir" value="/home/renan-ruiz/Desktop/Recipe-Aggregator"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="native.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib"/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="UTF-8"/>
+    <property name="java.vendor" value="Alibaba"/>
+    <property name="java.vm.version" value="21.0.8.0.8"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="65.0"/>
+  </properties>
+  <testcase name="shouldCreateIngredient" classname="com.mycompany.recipeaggregator.service.IngredientServiceTest" time="0.047"/>
+  <testcase name="shouldThrowWhenDeleteIdInvalid" classname="com.mycompany.recipeaggregator.service.IngredientServiceTest" time="0.004"/>
+  <testcase name="shouldDeleteIngredient" classname="com.mycompany.recipeaggregator.service.IngredientServiceTest" time="0.002"/>
+  <testcase name="shouldListMostUsedIngredients" classname="com.mycompany.recipeaggregator.service.IngredientServiceTest" time="0.004"/>
+  <testcase name="shouldListAllIngredients" classname="com.mycompany.recipeaggregator.service.IngredientServiceTest" time="0.005"/>
+</testsuite>

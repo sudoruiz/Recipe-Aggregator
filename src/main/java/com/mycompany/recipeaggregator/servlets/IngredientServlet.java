@@ -19,7 +19,7 @@ public class IngredientServlet extends HttpServlet {
     @Override
     public void init() {
         IngredientRepository repository =
-                new IngredientDAO(DatabaseConfig.PROD_DB_URL);
+                new IngredientDAO(DatabaseConfig.DB_URL);
 
         this.service = new IngredientService(repository);
     }

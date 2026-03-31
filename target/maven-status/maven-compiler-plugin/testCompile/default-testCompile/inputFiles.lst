@@ -1,2 +1,5 @@
+/home/renan-ruiz/Desktop/Recipe-Aggregator/src/test/java/com/mycompany/recipeaggregator/e2e/BaseE2ETest.java
+/home/renan-ruiz/Desktop/Recipe-Aggregator/src/test/java/com/mycompany/recipeaggregator/e2e/RecipeE2ETest.java
 /home/renan-ruiz/Desktop/Recipe-Aggregator/src/test/java/com/mycompany/recipeaggregator/service/RecipeIngredientServiceTest.java
 /home/renan-ruiz/Desktop/Recipe-Aggregator/src/test/java/com/mycompany/recipeaggregator/service/RecipeServiceTest.java
+/home/renan-ruiz/Desktop/Recipe-Aggregator/src/test/java/com/mycompany/recipeaggregator/service/IngredientTest.java
