@@ -27,11 +27,13 @@ public class RecipeServlet extends HttpServlet {
 
     @Override
     public void init() {
+        DatabaseConfig.init();
+
         CrudRepository repo =
-                new RecipeDAO(DatabaseConfig.PROD_DB_URL);
+                new RecipeDAO(DatabaseConfig.DB_URL);
 
         RecipeIngredientRepository ingredientRepo =
-                new RecipeIngredientDAO(DatabaseConfig.PROD_DB_URL);
+                new RecipeIngredientDAO(DatabaseConfig.DB_URL);
 
         this.recipeIngredientService = new RecipeIngredientService(ingredientRepo);
         this.recipeService = new RecipeService(repo);
@@ -41,7 +43,7 @@ public class RecipeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         try {
             List<RecipeResponseDTO> dtoList = recipeService.listRecipes();
             response.setContentType("application/json");
@@ -54,7 +56,7 @@ public class RecipeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         try {
             RecipeCreateDTO dto = mapper.readValue(request.getReader(), RecipeCreateDTO.class);
             Recipe recipe = recipeService.createRecipe(dto);
@@ -71,7 +73,7 @@ public class RecipeServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         String idParam = request.getParameter("id");
         if (idParam == null) {
             sendError(response, 400, "Id not provided", null);
