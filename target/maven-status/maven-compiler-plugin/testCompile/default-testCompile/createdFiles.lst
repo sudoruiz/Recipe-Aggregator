@@ -3,3 +3,4 @@ com/mycompany/recipeaggregator/e2e/BaseE2ETest.class
 com/mycompany/recipeaggregator/e2e/RecipeE2ETest.class
 com/mycompany/recipeaggregator/service/RecipeIngredientServiceTest.class
 com/mycompany/recipeaggregator/service/RecipeServiceTest.class
+com/mycompany/recipeaggregator/config/DatabaseConfigTest.class

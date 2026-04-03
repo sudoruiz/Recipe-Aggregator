@@ -1,5 +1,6 @@
 package com.mycompany.recipeaggregator.dao;
 
+import com.mycompany.recipeaggregator.config.DatabaseConfig;
 import com.mycompany.recipeaggregator.models.RecipeIngredient;
 import com.mycompany.recipeaggregator.repository.RecipeIngredientRepository;
 
@@ -9,17 +10,14 @@ import java.util.List;
 
 public class RecipeIngredientDAO implements RecipeIngredientRepository {
 
-    private final String url;
-
-    public RecipeIngredientDAO(String url) {
-        this.url = url;
+    public RecipeIngredientDAO() {
     }
 
     @Override
     public List<RecipeIngredient> list() throws SQLException {
         List<RecipeIngredient> list = new ArrayList<>();
         String sql = "SELECT * FROM recipe_ingredients";
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DatabaseConfig.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
@@ -37,7 +35,7 @@ public class RecipeIngredientDAO implements RecipeIngredientRepository {
     @Override
     public RecipeIngredient insert(RecipeIngredient ri) throws SQLException {
         String sql = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, ri.getRecipeId());
             pstmt.setInt(2, ri.getIngredientId());
@@ -55,7 +53,7 @@ public class RecipeIngredientDAO implements RecipeIngredientRepository {
                 SET quantity = ?, unit = ?
                 WHERE recipe_id = ? AND ingredient_id = ?
                 """;
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, ri.getQuantity());
             pstmt.setString(2, ri.getUnit());
@@ -69,7 +67,7 @@ public class RecipeIngredientDAO implements RecipeIngredientRepository {
     @Override
     public void delete(int recipeId) throws SQLException {
         String sql = "DELETE FROM recipe_ingredients WHERE recipe_id = ?";
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, recipeId);
             pstmt.executeUpdate();
@@ -80,7 +78,7 @@ public class RecipeIngredientDAO implements RecipeIngredientRepository {
     public List<RecipeIngredient> findByRecipeId(int recipeId) throws SQLException {
         List<RecipeIngredient> list = new ArrayList<>();
         String sql = "SELECT * FROM recipe_ingredients WHERE recipe_id = ?";
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, recipeId);
             ResultSet rs = pstmt.executeQuery();
@@ -102,7 +100,7 @@ public class RecipeIngredientDAO implements RecipeIngredientRepository {
                 DELETE FROM recipe_ingredients
                 WHERE recipe_id = ? AND ingredient_id = ?
                 """;
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, recipeId);
             pstmt.setInt(2, ingredientId);

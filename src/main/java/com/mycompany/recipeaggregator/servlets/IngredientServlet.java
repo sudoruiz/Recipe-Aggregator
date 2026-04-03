@@ -1,7 +1,6 @@
 package com.mycompany.recipeaggregator.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mycompany.recipeaggregator.config.DatabaseConfig;
 import com.mycompany.recipeaggregator.dao.IngredientDAO;
 import com.mycompany.recipeaggregator.dto.IngredientCreateDTO;
 import com.mycompany.recipeaggregator.dto.IngredientResponseDTO;
@@ -18,8 +17,7 @@ public class IngredientServlet extends HttpServlet {
 
     @Override
     public void init() {
-        IngredientRepository repository =
-                new IngredientDAO(DatabaseConfig.DB_URL);
+        IngredientRepository repository = new IngredientDAO();
 
         this.service = new IngredientService(repository);
     }

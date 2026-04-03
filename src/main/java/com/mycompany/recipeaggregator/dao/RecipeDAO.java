@@ -1,11 +1,11 @@
 package com.mycompany.recipeaggregator.dao;
 
+import com.mycompany.recipeaggregator.config.DatabaseConfig;
 import com.mycompany.recipeaggregator.models.Recipe;
 import com.mycompany.recipeaggregator.models.RecipeIngredient;
 import com.mycompany.recipeaggregator.repository.CrudRepository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,14 +15,9 @@ import java.util.List;
 
 public class RecipeDAO implements CrudRepository<Recipe> {
 
-    private final String url;
-
-    public RecipeDAO(String url) {
-        this.url = url;
-
+    public RecipeDAO() {
         try {
             Class.forName("org.sqlite.JDBC");
-            System.out.println("Driver SQlite loaded successfully.");
             createTable();
 
         } catch (ClassNotFoundException | SQLException e) {
@@ -55,7 +50,7 @@ public class RecipeDAO implements CrudRepository<Recipe> {
                 + "FOREIGN KEY (ingredient_id) REFERENCES ingredients(id) ON DELETE CASCADE)";
 
 
-        try (Connection conn = DriverManager.getConnection(url); Statement stmt = conn.createStatement()) {
+        try (Connection conn = DatabaseConfig.getConnection(); Statement stmt = conn.createStatement()) {
             stmt.execute(sqlRecipes);
             stmt.execute(sqlIngredients);
             stmt.execute(sqlRecipeIngredients);
@@ -65,7 +60,7 @@ public class RecipeDAO implements CrudRepository<Recipe> {
     @Override
     public Recipe insert(Recipe recipe) throws SQLException {
         String sql = "INSERT INTO recipes(name, description, preparationTime, portions) VALUES(?, ?, ?, ?)";
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, recipe.getName());
@@ -79,7 +74,7 @@ public class RecipeDAO implements CrudRepository<Recipe> {
                 int recipeId = keys.getInt(1);
                 recipe.setId(recipeId);
 
-                RecipeIngredientDAO riDAO = new RecipeIngredientDAO(url);
+                RecipeIngredientDAO riDAO = new RecipeIngredientDAO();
                 for (RecipeIngredient ri : recipe.getIngredients()) {
                     ri.setRecipeId(recipeId);
                     riDAO.insert(ri);
@@ -92,14 +87,14 @@ public class RecipeDAO implements CrudRepository<Recipe> {
     public List<Recipe> list() throws SQLException {
         List<Recipe> recipes = new ArrayList<>();
         String sql = "SELECT * FROM recipes";
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DatabaseConfig.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 List<RecipeIngredient> ingredients = new ArrayList<>();
                 try {
-                    RecipeIngredientDAO riDAO = new RecipeIngredientDAO(url);
+                    RecipeIngredientDAO riDAO = new RecipeIngredientDAO();
                     ingredients = riDAO.findByRecipeId(rs.getInt("id"));
                 } catch (Exception e) {
                     throw new SQLException("Error to convert ingredients of database", e);
@@ -124,7 +119,7 @@ public class RecipeDAO implements CrudRepository<Recipe> {
     @Override
     public Recipe update(Recipe recipe) throws SQLException {
         String sql = "UPDATE recipes SET name = ?, description = ?, preparationTime = ?, portions = ? WHERE id = ?";
-        try (Connection conn = DriverManager.getConnection(url); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConfig.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, recipe.getName());
             pstmt.setString(2, recipe.getDescription());
@@ -138,7 +133,7 @@ public class RecipeDAO implements CrudRepository<Recipe> {
 
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM recipes WHERE id = ?";
-        try (Connection conn = DriverManager.getConnection(url); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConfig.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
         }

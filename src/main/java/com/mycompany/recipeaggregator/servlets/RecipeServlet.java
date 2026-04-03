@@ -5,7 +5,6 @@ import com.mycompany.recipeaggregator.repository.CrudRepository;
 import com.mycompany.recipeaggregator.repository.RecipeIngredientRepository;
 import com.mycompany.recipeaggregator.service.RecipeIngredientService;
 import com.mycompany.recipeaggregator.service.RecipeService;
-import com.mycompany.recipeaggregator.config.DatabaseConfig;
 import com.mycompany.recipeaggregator.models.Recipe;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.recipeaggregator.dao.*;
@@ -27,13 +26,9 @@ public class RecipeServlet extends HttpServlet {
 
     @Override
     public void init() {
-        DatabaseConfig.init();
+        CrudRepository repo = new RecipeDAO();
 
-        CrudRepository repo =
-                new RecipeDAO(DatabaseConfig.DB_URL);
-
-        RecipeIngredientRepository ingredientRepo =
-                new RecipeIngredientDAO(DatabaseConfig.DB_URL);
+        RecipeIngredientRepository ingredientRepo = new RecipeIngredientDAO();
 
         this.recipeIngredientService = new RecipeIngredientService(ingredientRepo);
         this.recipeService = new RecipeService(repo);

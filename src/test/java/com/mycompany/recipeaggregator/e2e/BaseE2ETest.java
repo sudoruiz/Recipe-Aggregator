@@ -1,5 +1,6 @@
 package com.mycompany.recipeaggregator.e2e;
 
+import com.mycompany.recipeaggregator.config.DatabaseConfigTest;
 import com.mycompany.recipeaggregator.servlets.IngredientServlet;
 import com.mycompany.recipeaggregator.servlets.RecipeServlet;
 import org.apache.catalina.Context;
@@ -16,7 +17,7 @@ public abstract class BaseE2ETest {
 
     @BeforeAll
     static void startServer() throws Exception {
-        System.setProperty("db.url", "jdbc:sqlite:file:testdb?mode=memory&cache=shared");
+        DatabaseConfigTest.configure();
 
         tomcat = new Tomcat();
         tomcat.setPort(0);

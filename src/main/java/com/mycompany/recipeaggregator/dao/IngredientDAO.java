@@ -1,5 +1,6 @@
 package com.mycompany.recipeaggregator.dao;
 
+import com.mycompany.recipeaggregator.config.DatabaseConfig;
 import com.mycompany.recipeaggregator.dto.IngredientUsageDTO;
 import com.mycompany.recipeaggregator.models.Ingredient;
 import com.mycompany.recipeaggregator.repository.IngredientRepository;
@@ -10,10 +11,7 @@ import java.util.List;
 
 public class IngredientDAO implements IngredientRepository {
 
-    private final String url;
-
-    public IngredientDAO(String url) {
-        this.url = url;
+    public IngredientDAO() {
     }
 
     @Override
@@ -21,7 +19,7 @@ public class IngredientDAO implements IngredientRepository {
         List<Ingredient> list = new ArrayList<>();
         String sql = "SELECT * FROM ingredients";
 
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DatabaseConfig.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -39,7 +37,7 @@ public class IngredientDAO implements IngredientRepository {
     public Ingredient insert(Ingredient ingredient) throws SQLException {
         String sql = "INSERT INTO ingredients (name) VALUES (?)";
 
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, ingredient.getName());
             pstmt.executeUpdate();
@@ -56,7 +54,7 @@ public class IngredientDAO implements IngredientRepository {
     public Ingredient update(Ingredient ingredient) throws SQLException {
         String sql = "UPDATE ingredients SET name = ? WHERE id = ?";
 
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, ingredient.getName());
             pstmt.setInt(2, ingredient.getId());
@@ -68,7 +66,7 @@ public class IngredientDAO implements IngredientRepository {
     @Override
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM ingredients WHERE id = ?";
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
@@ -89,7 +87,7 @@ public class IngredientDAO implements IngredientRepository {
                     ORDER BY usage_count DESC
                 """;
 
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
 
@@ -104,5 +102,4 @@ public class IngredientDAO implements IngredientRepository {
 
         return result;
     }
-
 }
