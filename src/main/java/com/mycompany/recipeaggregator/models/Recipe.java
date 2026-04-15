@@ -1,17 +1,31 @@
 package com.mycompany.recipeaggregator.models;
 
+import jakarta.persistence.*;
+
 import java.util.List;
 
+@Entity
+@Table(name = "recipes")
 public class Recipe {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String name;
+
     private String description;
-    private List<RecipeIngredient> ingredients;
+
+    @Column(name = "preparation_time")
     private int preparationTime;
+
     private int portions;
 
-    public Recipe() {}
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecipeIngredient> ingredients;
+
+    public Recipe() {
+    }
 
     public Recipe(int id, String name, String description, List<RecipeIngredient> ingredients, int preparationTime, int portions) {
         this.id = id;

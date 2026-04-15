@@ -4,7 +4,7 @@ import com.mycompany.recipeaggregator.models.RecipeIngredient;
 
 import java.util.List;
 
-public class RecipeResponseDTO {
+public class    RecipeResponseDTO {
     private int id;
     private String name;
     private String description;

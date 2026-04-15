@@ -1,6 +1,8 @@
 package com.mycompany.recipeaggregator.service;
 
 import com.mycompany.recipeaggregator.dto.RecipeIngredientPatchDTO;
+import com.mycompany.recipeaggregator.models.Ingredient;
+import com.mycompany.recipeaggregator.models.Recipe;
 import com.mycompany.recipeaggregator.models.RecipeIngredient;
 import com.mycompany.recipeaggregator.repository.RecipeIngredientRepository;
 
@@ -38,12 +40,20 @@ public class RecipeIngredientService {
 
             case "add" -> {
                 validateQuantity(dto);
+
+                Recipe recipe = new Recipe();
+                recipe.setId(recipeId);
+
+                Ingredient ingredient = new Ingredient();
+                ingredient.setId(dto.getIngredientId());
+
                 RecipeIngredient ri = new RecipeIngredient(
-                        recipeId,
-                        dto.getIngredientId(),
+                        recipe,
+                        ingredient,
                         dto.getQuantity(),
                         dto.getUnit()
                 );
+
                 repository.insert(ri);
             }
 
@@ -56,9 +66,16 @@ public class RecipeIngredientService {
 
             case "update" -> {
                 validateQuantity(dto);
+
+                Recipe recipe = new Recipe();
+                recipe.setId(recipeId);
+
+                Ingredient ingredient = new Ingredient();
+                ingredient.setId(dto.getIngredientId());
+
                 RecipeIngredient ri = new RecipeIngredient(
-                        recipeId,
-                        dto.getIngredientId(),
+                        recipe,
+                        ingredient,
                         dto.getQuantity(),
                         dto.getUnit()
                 );

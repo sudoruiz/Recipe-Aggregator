@@ -5,11 +5,11 @@ import java.util.List;
 
 public interface CrudRepository<T> {
 
-    List<T> list() throws SQLException;
+    List<T> list();
 
-    T insert(T entity) throws SQLException;
+    T insert(T entity);
 
-    T update(T entity) throws SQLException;
+    T update(T entity);
 
-    void delete(int id) throws SQLException;
+    void delete(int id) ;
 }

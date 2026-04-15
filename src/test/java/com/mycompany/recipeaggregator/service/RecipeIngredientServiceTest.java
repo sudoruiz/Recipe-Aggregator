@@ -1,6 +1,8 @@
 package com.mycompany.recipeaggregator.service;
 
 import com.mycompany.recipeaggregator.dto.RecipeIngredientPatchDTO;
+import com.mycompany.recipeaggregator.models.Ingredient;
+import com.mycompany.recipeaggregator.models.Recipe;
 import com.mycompany.recipeaggregator.repository.RecipeIngredientRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,8 +43,14 @@ class RecipeIngredientServiceTest {
         dto.setQuantity(2);
         dto.setUnit("kg");
 
+        Recipe recipe = new Recipe();
+        recipe.setId(10);
+
+        Ingredient ingredient = new Ingredient();
+        ingredient.setId(1);
+
         var expected = List.of(
-                new RecipeIngredient(10, 1, 2, "kg")
+                new RecipeIngredient(recipe, ingredient, 2, "kg")
         );
 
         when(repository.findByRecipeId(10)).thenReturn(expected);
@@ -50,7 +58,7 @@ class RecipeIngredientServiceTest {
         var result = service.patchIngredients(10, dto);
 
         assertEquals(1, result.size());
-        assertEquals(1, result.get(0).getIngredientId());
+        assertEquals(1, result.get(0).getIngredient().getId());
         assertEquals(2, result.get(0).getQuantity());
         assertEquals("kg", result.get(0).getUnit());
 
@@ -82,8 +90,14 @@ class RecipeIngredientServiceTest {
         dto.setQuantity(5);
         dto.setUnit("g");
 
+        Recipe recipe = new Recipe();
+        recipe.setId(10);
+
+        Ingredient ingredientEntity = new Ingredient();
+        ingredientEntity.setId(1);
+
         var expected = List.of(
-                new RecipeIngredient(10, 1, 5, "g")
+                new RecipeIngredient(recipe, ingredientEntity, 5, "g")
         );
 
         when(repository.findByRecipeId(10)).thenReturn(expected);

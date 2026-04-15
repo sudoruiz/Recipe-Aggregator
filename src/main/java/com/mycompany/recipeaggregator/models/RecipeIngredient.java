@@ -1,54 +1,67 @@
 package com.mycompany.recipeaggregator.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "recipe_ingredients")
+@IdClass(RecipeIngredientId.class)
 public class RecipeIngredient {
-    private int recipeId;
-    private int ingredientId;
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "recipe_id")
+    @JsonIgnore
+    private Recipe recipe;
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "ingredient_id")
+    private Ingredient ingredient;
+
     private int quantity;
+
     private String unit;
-    private String ingredientName;
 
     public RecipeIngredient() {}
 
-    public RecipeIngredient(int recipeId, int ingredientId, int quantity, String unit) {
-        this.recipeId = recipeId;
-        this.ingredientId = ingredientId;
+    public RecipeIngredient(Recipe recipe, Ingredient ingredient, int quantity, String unit) {
+        this.recipe = recipe;
+        this.ingredient = ingredient;
         this.quantity = quantity;
         this.unit = unit;
     }
 
-    public int getRecipeId() {
-        return recipeId;
+    public Recipe getRecipe() {
+        return recipe;
     }
 
-    public void setRecipeId(int recipeId) {
-        this.recipeId = recipeId;
-    }
-
-    public int getIngredientId() {
-        return ingredientId;
-    }
-
-    public void setIngredientId(int ingredientId) {
-        this.ingredientId = ingredientId;
+    public Ingredient getIngredient() {
+        return ingredient;
     }
 
     public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
     public String getUnit() {
         return unit;
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
+    }
+
+    public void setIngredient(Ingredient ingredient) {
+        this.ingredient = ingredient;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public void setUnit(String unit) {
         this.unit = unit;
     }
 
-    public String getIngredientName() {return ingredientName;}
-
-    public void setIngredientName(String ingredientName) {this.ingredientName = ingredientName;}
 }

@@ -15,6 +15,15 @@ public class RecipeE2ETest extends BaseE2ETest {
     @Test
     void shouldCreateAndFindRecipe() throws Exception {
 
+        String ingredientJson = """
+                        {
+                          "name": "Farinha"
+                        }
+                """;
+
+        String ingredientResponse = sendPost("/ingredients", ingredientJson, 201);
+        int ingredientId = extractId(ingredientResponse);
+
         String json = """
                         {
                           "name": "Exemplo",
@@ -23,13 +32,13 @@ public class RecipeE2ETest extends BaseE2ETest {
                           "portions": 1,
                           "ingredients": [
                             {
-                              "ingredientId": 2,
+                              "ingredientId": %d,
                               "quantity": 2,
                               "unit": "unidade"
                             }
                           ]
                         }
-                """;
+                """.formatted(ingredientId);
 
         String postResponse = sendPost("/recipes", json);
 
@@ -52,6 +61,10 @@ public class RecipeE2ETest extends BaseE2ETest {
     }
 
     private String sendPost(String path, String json) throws Exception {
+        return sendPost(path, json, 201);
+    }
+
+    private String sendPost(String path, String json, int expectedStatus) throws Exception {
         URL url = new URL(baseUrl + path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -64,7 +77,7 @@ public class RecipeE2ETest extends BaseE2ETest {
         }
 
         int status = conn.getResponseCode();
-        assertEquals(201, status);
+        assertEquals(expectedStatus, status);
 
         return readResponse(conn);
     }

@@ -1,8 +1,21 @@
 package com.mycompany.recipeaggregator.models;
 
+import jakarta.persistence.*;
+
+import java.util.List;
+
+@Entity
+@Table(name = "ingredients")
 public class Ingredient {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String name;
+
+    @OneToMany(mappedBy = "ingredient")
+    private List<RecipeIngredient> recipes;
 
     public Ingredient() {}
 
@@ -10,9 +23,11 @@ public class Ingredient {
         this.id = id;
         this.name = name;
     }
+
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -25,4 +40,3 @@ public class Ingredient {
         this.name = name;
     }
 }
-

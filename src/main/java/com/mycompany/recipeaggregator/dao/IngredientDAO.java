@@ -1,105 +1,105 @@
 package com.mycompany.recipeaggregator.dao;
 
-import com.mycompany.recipeaggregator.config.DatabaseConfig;
+import com.mycompany.recipeaggregator.config.HibernateUtil;
 import com.mycompany.recipeaggregator.dto.IngredientUsageDTO;
 import com.mycompany.recipeaggregator.models.Ingredient;
 import com.mycompany.recipeaggregator.repository.IngredientRepository;
-
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class IngredientDAO implements IngredientRepository {
 
-    public IngredientDAO() {
+    @Override
+    public List<Ingredient> list() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+            return session
+                    .createQuery("FROM Ingredient", Ingredient.class)
+                    .list();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error listing ingredients", e);
+        }
     }
 
     @Override
-    public List<Ingredient> list() throws SQLException {
-        List<Ingredient> list = new ArrayList<>();
-        String sql = "SELECT * FROM ingredients";
+    public Ingredient insert(Ingredient ingredient) {
+        Transaction transaction = null;
 
-        try (Connection conn = DatabaseConfig.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
 
-            while (rs.next()) {
-                list.add(new Ingredient(
-                        rs.getInt("id"),
-                        rs.getString("name")
-                ));
-            }
+            session.persist(ingredient);
+
+            transaction.commit();
+
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            throw new RuntimeException("Error inserting ingredient", e);
         }
-        return list;
-    }
 
-    @Override
-    public Ingredient insert(Ingredient ingredient) throws SQLException {
-        String sql = "INSERT INTO ingredients (name) VALUES (?)";
-
-        try (Connection conn = DatabaseConfig.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            pstmt.setString(1, ingredient.getName());
-            pstmt.executeUpdate();
-
-            ResultSet keys = pstmt.getGeneratedKeys();
-            if (keys.next()) {
-                ingredient.setId(keys.getInt(1));
-            }
-        }
         return ingredient;
     }
 
     @Override
-    public Ingredient update(Ingredient ingredient) throws SQLException {
-        String sql = "UPDATE ingredients SET name = ? WHERE id = ?";
+    public Ingredient update(Ingredient ingredient) {
+        Transaction transaction = null;
 
-        try (Connection conn = DatabaseConfig.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, ingredient.getName());
-            pstmt.setInt(2, ingredient.getId());
-            pstmt.executeUpdate();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            session.merge(ingredient);
+
+            transaction.commit();
+
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            throw new RuntimeException("Error updating ingredient", e);
         }
+
         return ingredient;
     }
 
     @Override
-    public void delete(int id) throws SQLException {
-        String sql = "DELETE FROM ingredients WHERE id = ?";
-        try (Connection conn = DatabaseConfig.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            pstmt.executeUpdate();
+    public void delete(int id) {
+        Transaction transaction = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            Ingredient ingredient = session.get(Ingredient.class, id);
+            if (ingredient != null) {
+                session.remove(ingredient);
+            }
+
+            transaction.commit();
+
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            throw new RuntimeException("Error deleting ingredient", e);
         }
     }
 
-    public List<IngredientUsageDTO> listMostUsed() throws SQLException {
-        List<IngredientUsageDTO> result = new ArrayList<>();
+    public List<IngredientUsageDTO> listMostUsed() {
 
-        String sql = """
-                    SELECT
-                        i.id,
-                        i.name,
-                        COUNT(ri.ingredient_id) AS usage_count
-                    FROM recipe_ingredients ri
-                    JOIN ingredients i ON i.id = ri.ingredient_id
-                    GROUP BY i.id, i.name
-                    ORDER BY usage_count DESC
-                """;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
-        try (Connection conn = DatabaseConfig.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+            return session.createQuery("""
+                SELECT new com.mycompany.recipeaggregator.dto.IngredientUsageDTO(
+                    i.id,
+                    i.name,
+                    COUNT(ri.ingredient.id)
+                )
+                FROM RecipeIngredient ri
+                JOIN ri.ingredient i
+                GROUP BY i.id, i.name
+                ORDER BY COUNT(ri.ingredient.id) DESC
+            """, IngredientUsageDTO.class).list();
 
-            while (rs.next()) {
-                result.add(new IngredientUsageDTO(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getInt("usage_count")
-                ));
-            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error listing most used ingredients", e);
         }
-
-        return result;
     }
 }

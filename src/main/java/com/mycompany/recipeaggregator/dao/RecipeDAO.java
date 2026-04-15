@@ -1,141 +1,95 @@
 package com.mycompany.recipeaggregator.dao;
 
-import com.mycompany.recipeaggregator.config.DatabaseConfig;
+import com.mycompany.recipeaggregator.config.HibernateUtil;
+import com.mycompany.recipeaggregator.models.Ingredient;
 import com.mycompany.recipeaggregator.models.Recipe;
 import com.mycompany.recipeaggregator.models.RecipeIngredient;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import com.mycompany.recipeaggregator.repository.CrudRepository;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeDAO implements CrudRepository<Recipe> {
 
-    public RecipeDAO() {
-        try {
-            Class.forName("org.sqlite.JDBC");
-            createTable();
-
-        } catch (ClassNotFoundException | SQLException e) {
-            throw new RuntimeException("Error to start DAO: " + e.getMessage(), e);
-        }
-
-        System.out.println("Starting RecipeDAO");
-
-    }
-
-    public void createTable() throws SQLException {
-        String sqlRecipes = "CREATE TABLE IF NOT EXISTS recipes ("
-                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "name TEXT NOT NULL, "
-                + "description TEXT, "
-                + "preparationTime INTEGER, "
-                + "portions INTEGER)";
-
-        String sqlIngredients = "CREATE TABLE IF NOT EXISTS ingredients ("
-                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "name TEXT NOT NULL)";
-
-        String sqlRecipeIngredients = "CREATE TABLE IF NOT EXISTS recipe_ingredients ("
-                + "recipe_id INTEGER NOT NULL, "
-                + "ingredient_id INTEGER NOT NULL, "
-                + "quantity INTEGER NOT NULL, "
-                + "unit TEXT NOT NULL, "
-                + "PRIMARY KEY (recipe_id, ingredient_id), "
-                + "FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE, "
-                + "FOREIGN KEY (ingredient_id) REFERENCES ingredients(id) ON DELETE CASCADE)";
-
-
-        try (Connection conn = DatabaseConfig.getConnection(); Statement stmt = conn.createStatement()) {
-            stmt.execute(sqlRecipes);
-            stmt.execute(sqlIngredients);
-            stmt.execute(sqlRecipeIngredients);
-        }
-    }
-
     @Override
-    public Recipe insert(Recipe recipe) throws SQLException {
-        String sql = "INSERT INTO recipes(name, description, preparationTime, portions) VALUES(?, ?, ?, ?)";
-        try (Connection conn = DatabaseConfig.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+    public Recipe insert(Recipe recipe) {
+        Transaction transaction = null;
 
-            pstmt.setString(1, recipe.getName());
-            pstmt.setString(2, recipe.getDescription());
-            pstmt.setInt(3, recipe.getPreparationTime());
-            pstmt.setInt(4, recipe.getPortions());
-            pstmt.executeUpdate();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
 
-            ResultSet keys = pstmt.getGeneratedKeys();
-            if (keys.next()) {
-                int recipeId = keys.getInt(1);
-                recipe.setId(recipeId);
-
-                RecipeIngredientDAO riDAO = new RecipeIngredientDAO();
+            if (recipe.getIngredients() != null) {
                 for (RecipeIngredient ri : recipe.getIngredients()) {
-                    ri.setRecipeId(recipeId);
-                    riDAO.insert(ri);
+                    Ingredient managed = session.get(Ingredient.class, ri.getIngredient().getId());
+                    ri.setIngredient(managed);
+                    ri.setRecipe(recipe);
                 }
             }
+
+            session.persist(recipe);
+
+            transaction.commit();
+
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            throw new RuntimeException("Error inserting recipe", e);
         }
+
         return recipe;
-    }
-
-    public List<Recipe> list() throws SQLException {
-        List<Recipe> recipes = new ArrayList<>();
-        String sql = "SELECT * FROM recipes";
-        try (Connection conn = DatabaseConfig.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                List<RecipeIngredient> ingredients = new ArrayList<>();
-                try {
-                    RecipeIngredientDAO riDAO = new RecipeIngredientDAO();
-                    ingredients = riDAO.findByRecipeId(rs.getInt("id"));
-                } catch (Exception e) {
-                    throw new SQLException("Error to convert ingredients of database", e);
-                }
-                Recipe recipe = new Recipe(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getString("description"),
-                        ingredients,
-                        rs.getInt("preparationTime"),
-                        rs.getInt("portions")
-                );
-                recipes.add(recipe);
-                System.out.println("Finded recipe: " + rs.getString("name"));
-            }
-        }
-        System.out.println("Listing recipes");
-
-        return recipes;
     }
 
     @Override
-    public Recipe update(Recipe recipe) throws SQLException {
-        String sql = "UPDATE recipes SET name = ?, description = ?, preparationTime = ?, portions = ? WHERE id = ?";
-        try (Connection conn = DatabaseConfig.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    public List<Recipe> list() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
-            pstmt.setString(1, recipe.getName());
-            pstmt.setString(2, recipe.getDescription());
-            pstmt.setInt(3, recipe.getPreparationTime());
-            pstmt.setInt(4, recipe.getPortions());
-            pstmt.setInt(5, recipe.getId());
-            pstmt.executeUpdate();
+            List<Recipe> recipes = session
+                    .createQuery("FROM Recipe r LEFT JOIN FETCH r.ingredients ri LEFT JOIN FETCH ri.ingredient", Recipe.class)
+                    .list();
+
+            System.out.println("Listing recipes");
+            return recipes;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error listing recipes", e);
         }
+    }
+
+    @Override
+    public Recipe update(Recipe recipe) {
+        Transaction transaction = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            session.merge(recipe);
+
+            transaction.commit();
+
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            throw new RuntimeException("Error updating recipe", e);
+        }
+
         return recipe;
     }
 
-    public void delete(int id) throws SQLException {
-        String sql = "DELETE FROM recipes WHERE id = ?";
-        try (Connection conn = DatabaseConfig.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            pstmt.executeUpdate();
+    @Override
+    public void delete(int id) {
+        Transaction transaction = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            Recipe recipe = session.get(Recipe.class, id);
+            if (recipe != null) {
+                session.remove(recipe);
+            }
+
+            transaction.commit();
+
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            throw new RuntimeException("Error deleting recipe", e);
         }
     }
 }

@@ -17,10 +17,11 @@ public class Mapper {
         return new IngredientResponseDTO(entity.getId(), entity.getName());
     }
 
-    public static RecipeIngredient toEntity(RecipeIngredientDTO dto, int recipeId) {
+    public static RecipeIngredient toEntity(RecipeIngredientDTO dto, Recipe recipe, Ingredient ingredient) {
         RecipeIngredient ri = new RecipeIngredient();
-        ri.setRecipeId(recipeId);
-        ri.setIngredientId(dto.getIngredientId());
+
+        ri.setRecipe(recipe);
+        ri.setIngredient(ingredient);
         ri.setQuantity(dto.getQuantity());
         ri.setUnit(dto.getUnit());
 
@@ -29,7 +30,7 @@ public class Mapper {
 
     public static RecipeIngredientDTO toDTO(RecipeIngredient entity) {
         return new RecipeIngredientDTO(
-                entity.getIngredientId(),
+                entity.getIngredient() != null ? entity.getIngredient().getId() : 0,
                 entity.getQuantity(),
                 entity.getUnit()
         );
@@ -39,9 +40,19 @@ public class Mapper {
         Recipe recipe = new Recipe();
         recipe.setName(dto.getName());
         recipe.setDescription(dto.getDescription());
-        recipe.setIngredients(dto.getIngredients());
         recipe.setPreparationTime(dto.getPreparationTime());
         recipe.setPortions(dto.getPortions());
+
+        if (dto.getIngredients() != null) {
+            List<RecipeIngredient> ingredients = dto.getIngredients().stream()
+                    .map(riDto -> {
+                        Ingredient ingredient = new Ingredient();
+                        ingredient.setId(riDto.getIngredientId());
+                        return new RecipeIngredient(recipe, ingredient, riDto.getQuantity(), riDto.getUnit());
+                    })
+                    .collect(Collectors.toList());
+            recipe.setIngredients(ingredients);
+        }
 
         return recipe;
     }
